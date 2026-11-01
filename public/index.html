@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Status Scheduler - Web Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="app-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
+                        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>WA Status Scheduler</h1>
+                    <p class="subtitle">Otomatisasi Status Teks &amp; Gambar Tanpa Aplikasi HP</p>
+                </div>
+            </div>
+            <div id="connectionPill" class="status-pill status-disconnected">
+                <span class="dot"></span>
+                <span id="connectionText">Memeriksa Koneksi...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+
+        <!-- Section 1: WhatsApp Connection Panel -->
+        <section class="card connection-card" id="connectionSection">
+            <div class="card-header">
+                <h2>1. Hubungkan WhatsApp</h2>
+                <span class="header-tip">Hubungkan akun Anda sekali saja via Perangkat Tertaut</span>
+            </div>
+
+            <!-- Shown when CONNECTED -->
+            <div id="connectedView" class="connected-box" style="display: none;">
+                <div class="check-icon">✓</div>
+                <div>
+                    <h3>WhatsApp Berhasil Terhubung!</h3>
+                    <p id="userNameText" class="user-info">Akun aktif dan siap memposting status otomatis 24/7.</p>
+                </div>
+                <button id="btnLogout" class="btn btn-outline-danger">Putuskan Koneksi</button>
+            </div>
+
+            <!-- Shown when DISCONNECTED / QR READY -->
+            <div id="disconnectedView" class="login-box">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="qr">Scan QR Code</button>
+                    <button class="auth-tab" data-tab="pairing">Gunakan Kode Pairing (Lebih Mudah di HP)</button>
+                </div>
+
+                <!-- Tab 1: QR Code -->
+                <div id="tabContentQr" class="tab-content active">
+                    <p class="tab-desc">Buka WhatsApp di HP Anda > Titik 3 di pojok kanan atas > <b>Perangkat Tertaut</b> > <b>Tautkan Perangkat</b> lalu scan kode berikut:</p>
+                    <div class="qr-wrapper">
+                        <div id="qrLoading" class="spinner"></div>
+                        <img id="qrImage" src="" alt="WhatsApp QR Code" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Tab 2: Pairing Code -->
+                <div id="tabContentPairing" class="tab-content">
+                    <p class="tab-desc">Masukkan nomor WhatsApp Anda (dengan kode negara, contoh: <b>628123456789</b>). Notifikasi akan muncul langsung di HP Anda!</p>
+                    <div class="pairing-form">
+                        <input type="text" id="phoneInput" placeholder="Contoh: 628123456789" class="input-text">
+                        <button id="btnRequestPairing" class="btn btn-primary">Dapatkan Kode 8 Digit</button>
+                    </div>
+                    <div id="pairingCodeResult" class="pairing-code-display" style="display: none;">
+                        <span>Ketikkan kode ini di WhatsApp HP Anda:</span>
+                        <div class="code-badge" id="pairingCodeText">---- ----</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Create Schedule Form -->
+        <section class="card form-card">
+            <div class="card-header">
+                <h2>2. Jadwalkan Status Baru</h2>
+                <span class="header-tip">Tentukan konten teks, foto, dan jam tayang otomatis</span>
+            </div>
+
+            <form id="scheduleForm" class="schedule-form">
+                <!-- Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">Tipe Status:</label>
+                    <div class="radio-toggle">
+                        <label class="radio-option">
+                            <input type="radio" name="statusType" value="TEXT" checked>
+                            <span>Status Teks</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="statusType" value="IMAGE">
+                            <span>Status Gambar (+ Teks)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Image Uploader (Hidden if Text only) -->
+                <div class="form-group" id="imageUploadGroup" style="display: none;">
+                    <label class="form-label" for="imageInput">Pilih Gambar Status:</label>
+                    <div class="file-dropzone" id="dropzone">
+                        <input type="file" id="imageInput" accept="image/*" class="file-input">
+                        <div class="dropzone-prompt" id="dropzonePrompt">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#075E54" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            <p>Klik atau seret file gambar ke sini (JPG, PNG, WebP)</p>
+                        </div>
+                        <img id="imagePreview" class="image-preview" src="" alt="Pratinjau" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Text / Caption -->
+                <div class="form-group">
+                    <label class="form-label" for="statusText">Isi Teks / Caption:</label>
+                    <textarea id="statusText" rows="3" class="input-textarea" placeholder="Tulis pesan status atau caption gambar di sini..."></textarea>
+                </div>
+
+                <!-- Datetime Picker -->
+                <div class="form-group">
+                    <label class="form-label" for="scheduleDatetime">Waktu Tayang Otomatis:</label>
+                    <input type="datetime-local" id="scheduleDatetime" class="input-datetime" required>
+                    <small class="input-hint">Waktu posting menggunakan zona waktu lokal perangkat Anda.</small>
+                </div>
+
+                <button type="submit" id="btnSubmitSchedule" class="btn btn-success btn-block">
+                    Simpan &amp; Jadwalkan Status
+                </button>
+            </form>
+        </section>
+
+        <!-- Section 3: Schedules List -->
+        <section class="card list-card">
+            <div class="card-header">
+                <h2>3. Daftar Antrean &amp; Riwayat</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">Semua</button>
+                    <button class="filter-tab" data-filter="PENDING">Menunggu</button>
+                    <button class="filter-tab" data-filter="COMPLETED">Terkirim</button>
+                </div>
+            </div>
+
+            <div id="schedulesContainer" class="schedules-grid">
+                <div class="empty-state">Memuat jadwal...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>WA Status Scheduler • Berjalan di Server 24/7 Tanpa Aplikasi HP</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
