@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+    limits: { fileSize: 15 * 1024 * 1024 }, // 15MB max
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -73,58 +73,88 @@ let pairingCode = null;
 let connectedUser = null;
 
 async function startWhatsApp() {
-    const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
-    const { version } = await fetchLatestBaileysVersion();
+    try {
+        const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+        const { version } = await fetchLatestBaileysVersion();
 
-    sock = makeWASocket({
-        version,
-        auth: state,
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: true,
-        browser: ['WA Status Scheduler', 'Chrome', '1.0.0']
-    });
+        sock = makeWASocket({
+            version,
+            auth: state,
+            logger: pino({ level: 'silent' }),
+            printQRInTerminal: false,
+            browser: ['WA Status Scheduler', 'Chrome', '1.0.0']
+        });
 
-    sock.ev.on('creds.update', saveCreds);
+        sock.ev.on('creds.update', saveCreds);
 
-    sock.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect, qr } = update;
+        sock.ev.on('connection.update', async (update) => {
+            const { connection, lastDisconnect, qr } = update;
 
-        if (qr) {
-            try {
-                qrCodeDataUrl = await QRCode.toDataURL(qr);
-                connectionStatus = 'qr_ready';
+            if (qr) {
+                try {
+                    qrCodeDataUrl = await QRCode.toDataURL(qr);
+                    connectionStatus = 'qr_ready';
+                    pairingCode = null;
+                    console.log('[WA] QR Code siap dipindai');
+                } catch (err) {
+                    console.error('[WA] Gagal generate QR Code', err);
+                }
+            }
+
+            if (connection === 'close') {
+                const statusCode = (lastDisconnect?.error)?.output?.statusCode;
+                const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+                console.log('[WA] Koneksi terputus. Kode:', statusCode, '| Reconnect:', shouldReconnect);
+                connectionStatus = 'disconnected';
+                qrCodeDataUrl = null;
+                connectedUser = null;
+
+                if (shouldReconnect) {
+                    setTimeout(startWhatsApp, 3000);
+                }
+            } else if (connection === 'open') {
+                console.log('[WA] WhatsApp Berhasil Terhubung!');
+                connectionStatus = 'connected';
+                qrCodeDataUrl = null;
                 pairingCode = null;
-                console.log('[WA] QR Code siap dipindai');
-            } catch (err) {
-                console.error('[WA] Gagal generate QR Code', err);
+                connectedUser = {
+                    id: sock.user?.id ? sock.user.id.split(':')[0] : '',
+                    name: sock.user?.name || sock.user?.notify || 'Nomor WhatsApp Anda'
+                };
             }
-        }
-
-        if (connection === 'close') {
-            const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
-            console.log('[WA] Koneksi terputus. Alasan:', lastDisconnect?.error?.message, '| Reconnect:', shouldReconnect);
-            connectionStatus = 'disconnected';
-            qrCodeDataUrl = null;
-            connectedUser = null;
-
-            if (shouldReconnect) {
-                setTimeout(startWhatsApp, 3000);
-            }
-        } else if (connection === 'open') {
-            console.log('[WA] WhatsApp Berhasil Terhubung!');
-            connectionStatus = 'connected';
-            qrCodeDataUrl = null;
-            pairingCode = null;
-            connectedUser = {
-                id: sock.user?.id || '',
-                name: sock.user?.name || sock.user?.notify || 'Pengguna WhatsApp'
-            };
-        }
-    });
+        });
+    } catch (e) {
+        console.error('[WA] Gagal inisialisasi socket:', e);
+        connectionStatus = 'disconnected';
+        setTimeout(startWhatsApp, 5000);
+    }
 }
 
 // Start WhatsApp on launch
 startWhatsApp();
+
+// Shared status sender
+async function postStatusToWhatsApp(schedule) {
+    if (connectionStatus !== 'connected' || !sock) {
+        throw new Error('WhatsApp sedang tidak terhubung');
+    }
+
+    if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {
+        const imageBuffer = fs.readFileSync(schedule.imagePath);
+        return await sock.sendMessage('status@broadcast', {
+            image: imageBuffer,
+            caption: schedule.text || ''
+        });
+    } else {
+        const statusPayload = {
+            text: schedule.text || ''
+        };
+        if (schedule.backgroundColor) {
+            statusPayload.backgroundColor = schedule.backgroundColor;
+        }
+        return await sock.sendMessage('status@broadcast', statusPayload);
+    }
+}
 
 // REST API Endpoints
 
@@ -140,19 +170,24 @@ app.get('/api/connection-status', (req, res) => {
 
 // 2. Request pairing code (alternative to QR scan for mobile users)
 app.post('/api/pairing-code', async (req, res) => {
-    const { phone } = req.body;
+    let { phone } = req.body;
     if (!phone) {
         return res.status(400).json({ error: 'Nomor telepon harus diisi!' });
     }
 
     try {
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        let cleanPhone = phone.replace(/[^0-9]/g, '');
+        // Auto convert 08xx to 628xx
+        if (cleanPhone.startsWith('0')) {
+            cleanPhone = '62' + cleanPhone.slice(1);
+        }
+
         if (sock && !sock.authState.creds.registered) {
             const code = await sock.requestPairingCode(cleanPhone);
             pairingCode = code;
             res.json({ success: true, code });
         } else {
-            res.status(400).json({ error: 'WhatsApp sudah terhubung atau socket belum siap.' });
+            res.status(400).json({ error: 'WhatsApp sudah terhubung atau sistem belum siap.' });
         }
     } catch (err) {
         console.error('[WA] Error requesting pairing code:', err);
@@ -164,7 +199,7 @@ app.post('/api/pairing-code', async (req, res) => {
 app.post('/api/logout', async (req, res) => {
     try {
         if (sock) {
-            await sock.logout();
+            try { await sock.logout(); } catch (e) {}
         }
         if (fs.existsSync(AUTH_DIR)) {
             fs.rmSync(AUTH_DIR, { recursive: true, force: true });
@@ -188,19 +223,19 @@ app.get('/api/schedules', (req, res) => {
 // 5. Create new schedule
 app.post('/api/schedules', upload.single('image'), (req, res) => {
     try {
-        const { type, text, scheduledTimestamp } = req.body;
+        const { type, text, scheduledTimestamp, backgroundColor } = req.body;
 
         if (!scheduledTimestamp) {
             return res.status(400).json({ error: 'Waktu jadwal harus diisi!' });
         }
 
         const targetTime = parseInt(scheduledTimestamp, 10);
-        if (isNaN(targetTime) || targetTime <= Date.now()) {
+        if (isNaN(targetTime) || targetTime <= Date.now() - 60000) {
             return res.status(400).json({ error: 'Waktu jadwal harus lebih dari waktu sekarang!' });
         }
 
         if (type === 'IMAGE' && !req.file) {
-            return res.status(400).json({ error: 'Gambar harus diunggah untuk status tipe gambar!' });
+            return res.status(400).json({ error: 'Silakan pilih gambar terlebih dahulu!' });
         }
 
         if (type === 'TEXT' && (!text || !text.trim())) {
@@ -212,6 +247,7 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
             id: Date.now().toString(),
             type: type || (req.file ? 'IMAGE' : 'TEXT'),
             text: text ? text.trim() : '',
+            backgroundColor: backgroundColor || '#075E54',
             imagePath: req.file ? req.file.path : null,
             imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
             scheduledTimestamp: targetTime,
@@ -231,7 +267,29 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
     }
 });
 
-// 6. Delete schedule
+// 6. Send Immediately (Test / Instant Post)
+app.post('/api/schedules/:id/send-now', async (req, res) => {
+    const { id } = req.params;
+    const schedules = getSchedules();
+    const item = schedules.find(s => s.id === id);
+
+    if (!item) {
+        return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
+    }
+
+    try {
+        await postStatusToWhatsApp(item);
+        item.status = 'COMPLETED';
+        item.postedAt = Date.now();
+        item.errorMessage = null;
+        saveSchedules(schedules);
+        res.json({ success: true, message: 'Status berhasil dikirim ke WhatsApp!' });
+    } catch (err) {
+        res.status(500).json({ error: err.message || 'Gagal mengirim status' });
+    }
+});
+
+// 7. Delete schedule
 app.delete('/api/schedules/:id', (req, res) => {
     const { id } = req.params;
     let schedules = getSchedules();
@@ -246,7 +304,7 @@ app.delete('/api/schedules/:id', (req, res) => {
     res.json({ success: true, message: 'Jadwal berhasil dihapus' });
 });
 
-// Scheduler Engine: Runs every 20 seconds to process due schedules
+// Scheduler Engine: Runs every 15 seconds to process due schedules
 setInterval(async () => {
     const schedules = getSchedules();
     const now = Date.now();
@@ -256,36 +314,15 @@ setInterval(async () => {
         if (schedule.status === 'PENDING' && schedule.scheduledTimestamp <= now) {
             console.log(`[Scheduler] Memproses jadwal ID ${schedule.id} (${schedule.type})...`);
 
-            if (connectionStatus !== 'connected' || !sock) {
-                console.warn(`[Scheduler] Gagal kirim: WhatsApp belum terhubung!`);
-                schedule.status = 'FAILED';
-                schedule.errorMessage = 'WhatsApp sedang tidak terhubung ke server saat jadwal tiba';
-                hasChanges = true;
-                continue;
-            }
-
             try {
-                if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {
-                    // Send Image status
-                    const imageBuffer = fs.readFileSync(schedule.imagePath);
-                    await sock.sendMessage('status@broadcast', {
-                        image: imageBuffer,
-                        caption: schedule.text || ''
-                    });
-                    console.log(`[Scheduler] Status Gambar ID ${schedule.id} berhasil terkirim!`);
-                } else {
-                    // Send Text status
-                    await sock.sendMessage('status@broadcast', {
-                        text: schedule.text
-                    });
-                    console.log(`[Scheduler] Status Teks ID ${schedule.id} berhasil terkirim!`);
-                }
-
+                await postStatusToWhatsApp(schedule);
+                console.log(`[Scheduler] Status ID ${schedule.id} berhasil terkirim!`);
                 schedule.status = 'COMPLETED';
                 schedule.postedAt = Date.now();
+                schedule.errorMessage = null;
                 hasChanges = true;
             } catch (err) {
-                console.error(`[Scheduler] Error mengirim status ID ${schedule.id}:`, err);
+                console.error(`[Scheduler] Error mengirim status ID ${schedule.id}:`, err.message);
                 schedule.status = 'FAILED';
                 schedule.errorMessage = err.message || 'Gagal mengirim status ke WhatsApp';
                 hasChanges = true;
@@ -296,7 +333,7 @@ setInterval(async () => {
     if (hasChanges) {
         saveSchedules(schedules);
     }
-}, 20000);
+}, 15000);
 
 // Start HTTP server
 app.listen(PORT, () => {

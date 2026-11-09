@@ -3,162 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Status Scheduler - Web Dashboard</title>
+    <title>WhatsApp Status Scheduler Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header Navbar -->
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Header Navigation -->
     <header class="app-header">
-        <div class="container header-container">
-            <div class="logo-area">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
-                        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+        <div class="container header-inner">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h1>WA Status Scheduler</h1>
-                    <p class="subtitle">Otomatisasi Status Teks &amp; Gambar Tanpa Aplikasi HP</p>
+                    <h1 class="brand-title">WA Status Scheduler <span class="badge-pro">PRO</span></h1>
+                    <p class="brand-subtitle">Otomatisasi Status WhatsApp Cloud 24/7</p>
                 </div>
             </div>
-            <div id="connectionPill" class="status-pill status-disconnected">
-                <span class="dot"></span>
+
+            <div id="connectionBadge" class="connection-pill pill-disconnected">
+                <span class="pulsing-dot"></span>
                 <span id="connectionText">Memeriksa Koneksi...</span>
             </div>
         </div>
     </header>
 
-    <main class="container main-content">
+    <main class="container main-layout">
 
-        <!-- Section 1: WhatsApp Connection Panel -->
-        <section class="card connection-card" id="connectionSection">
-            <div class="card-header">
-                <h2>1. Hubungkan WhatsApp</h2>
-                <span class="header-tip">Hubungkan akun Anda sekali saja via Perangkat Tertaut</span>
-            </div>
-
-            <!-- Shown when CONNECTED -->
-            <div id="connectedView" class="connected-box" style="display: none;">
-                <div class="check-icon">✓</div>
-                <div>
-                    <h3>WhatsApp Berhasil Terhubung!</h3>
-                    <p id="userNameText" class="user-info">Akun aktif dan siap memposting status otomatis 24/7.</p>
-                </div>
-                <button id="btnLogout" class="btn btn-outline-danger">Putuskan Koneksi</button>
-            </div>
-
-            <!-- Shown when DISCONNECTED / QR READY -->
-            <div id="disconnectedView" class="login-box">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="qr">Scan QR Code</button>
-                    <button class="auth-tab" data-tab="pairing">Gunakan Kode Pairing (Lebih Mudah di HP)</button>
-                </div>
-
-                <!-- Tab 1: QR Code -->
-                <div id="tabContentQr" class="tab-content active">
-                    <p class="tab-desc">Buka WhatsApp di HP Anda > Titik 3 di pojok kanan atas > <b>Perangkat Tertaut</b> > <b>Tautkan Perangkat</b> lalu scan kode berikut:</p>
-                    <div class="qr-wrapper">
-                        <div id="qrLoading" class="spinner"></div>
-                        <img id="qrImage" src="" alt="WhatsApp QR Code" style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Tab 2: Pairing Code -->
-                <div id="tabContentPairing" class="tab-content">
-                    <p class="tab-desc">Masukkan nomor WhatsApp Anda (dengan kode negara, contoh: <b>628123456789</b>). Notifikasi akan muncul langsung di HP Anda!</p>
-                    <div class="pairing-form">
-                        <input type="text" id="phoneInput" placeholder="Contoh: 628123456789" class="input-text">
-                        <button id="btnRequestPairing" class="btn btn-primary">Dapatkan Kode 8 Digit</button>
-                    </div>
-                    <div id="pairingCodeResult" class="pairing-code-display" style="display: none;">
-                        <span>Ketikkan kode ini di WhatsApp HP Anda:</span>
-                        <div class="code-badge" id="pairingCodeText">---- ----</div>
+        <!-- 1. WhatsApp Connection Card -->
+        <section class="glass-card connection-card">
+            <div class="card-title-row">
+                <div class="title-with-icon">
+                    <span class="step-num">1</span>
+                    <div>
+                        <h2>Koneksi WhatsApp</h2>
+                        <p class="section-desc">Hubungkan akun Anda via fitur resmi Perangkat Tertaut</p>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Section 2: Create Schedule Form -->
-        <section class="card form-card">
-            <div class="card-header">
-                <h2>2. Jadwalkan Status Baru</h2>
-                <span class="header-tip">Tentukan konten teks, foto, dan jam tayang otomatis</span>
-            </div>
-
-            <form id="scheduleForm" class="schedule-form">
-                <!-- Type Selection -->
-                <div class="form-group">
-                    <label class="form-label">Tipe Status:</label>
-                    <div class="radio-toggle">
-                        <label class="radio-option">
-                            <input type="radio" name="statusType" value="TEXT" checked>
-                            <span>Status Teks</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="statusType" value="IMAGE">
-                            <span>Status Gambar (+ Teks)</span>
-                        </label>
+            <!-- Connected View -->
+            <div id="connectedView" class="state-connected" style="display: none;">
+                <div class="user-avatar-circle">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="connected-details">
+                    <div class="connected-headline">
+                        <h3 id="userNameDisplay">Nomor WhatsApp Anda</h3>
+                        <span class="shield-badge">✓ Terverifikasi 24/7</span>
                     </div>
+                    <p id="userPhoneDisplay" class="user-sub">Server cloud aktif dan siap mengirim status sesuai jadwal.</p>
                 </div>
-
-                <!-- Image Uploader (Hidden if Text only) -->
-                <div class="form-group" id="imageUploadGroup" style="display: none;">
-                    <label class="form-label" for="imageInput">Pilih Gambar Status:</label>
-                    <div class="file-dropzone" id="dropzone">
-                        <input type="file" id="imageInput" accept="image/*" class="file-input">
-                        <div class="dropzone-prompt" id="dropzonePrompt">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#075E54" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <polyline points="21 15 16 10 5 21"/>
-                            </svg>
-                            <p>Klik atau seret file gambar ke sini (JPG, PNG, WebP)</p>
-                        </div>
-                        <img id="imagePreview" class="image-preview" src="" alt="Pratinjau" style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Text / Caption -->
-                <div class="form-group">
-                    <label class="form-label" for="statusText">Isi Teks / Caption:</label>
-                    <textarea id="statusText" rows="3" class="input-textarea" placeholder="Tulis pesan status atau caption gambar di sini..."></textarea>
-                </div>
-
-                <!-- Datetime Picker -->
-                <div class="form-group">
-                    <label class="form-label" for="scheduleDatetime">Waktu Tayang Otomatis:</label>
-                    <input type="datetime-local" id="scheduleDatetime" class="input-datetime" required>
-                    <small class="input-hint">Waktu posting menggunakan zona waktu lokal perangkat Anda.</small>
-                </div>
-
-                <button type="submit" id="btnSubmitSchedule" class="btn btn-success btn-block">
-                    Simpan &amp; Jadwalkan Status
+                <button id="btnLogout" class="btn btn-danger-soft">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Putuskan
                 </button>
-            </form>
+            </div>
+
+            <!-- Disconnected View -->
+            <div id="disconnectedView" class="state-disconnected">
+                <div class="segmented-control">
+                    <button class="segment-btn active" data-tab="pairing">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                        Gunakan Kode Pairing (Paling Mudah)
+                    </button>
+                    <button class="segment-btn" data-tab="qr">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Scan QR Code
+                    </button>
+                </div>
+
+                <!-- Tab 1: Pairing Code -->
+                <div id="tabPairing" class="tab-pane active">
+                    <p class="tab-instruction">
+                        Masukkan nomor WhatsApp Anda. Kode 8 digit akan muncul untuk dimasukkan ke WhatsApp di HP Anda.
+                    </p>
+                    <div class="phone-input-group">
+                        <span class="country-prefix">🇮🇩 +62</span>
+                        <input type="tel" id="phoneInput" placeholder="81234567890" class="input-modern phone-field" autocomplete="tel">
+                        <button id="btnRequestPairing" class="btn btn-primary">
+                            <span>Dapatkan Kode</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Pairing Code Result Box -->
+                    <div id="pairingResultBox" class="pairing-result-box" style="display: none;">
+                        <span class="pairing-title">Ketikkan 8 Digit Kode Ini di WhatsApp HP Anda:</span>
+                        <div class="code-container">
+                            <div class="code-digit-box" id="pairingCodeDisplay">---- ----</div>
+                            <button id="btnCopyCode" class="btn btn-copy" title="Salin Kode">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                <span>Salin Kode</span>
+                            </button>
+                        </div>
+                        <div class="steps-guide">
+                            <div class="step-chip"><b>1.</b> Buka WhatsApp di HP</div>
+                            <div class="step-chip"><b>2.</b> Buka Notifikasi "Masukkan Kode"</div>
+                            <div class="step-chip"><b>3.</b> Masukkan 8 Digit di atas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: QR Code -->
+                <div id="tabQr" class="tab-pane">
+                    <p class="tab-instruction">
+                        Buka WhatsApp > Titik 3 di kanan atas > <b>Perangkat Tertaut</b> > <b>Tautkan Perangkat</b> lalu arahkan kamera ke kode di bawah:
+                    </p>
+                    <div class="qr-container">
+                        <div id="qrSpinner" class="modern-spinner"></div>
+                        <img id="qrImg" src="" alt="WhatsApp QR Code" style="display: none;">
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Section 3: Schedules List -->
-        <section class="card list-card">
-            <div class="card-header">
-                <h2>3. Daftar Antrean &amp; Riwayat</h2>
-                <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all">Semua</button>
-                    <button class="filter-tab" data-filter="PENDING">Menunggu</button>
-                    <button class="filter-tab" data-filter="COMPLETED">Terkirim</button>
+        <!-- 2. Status Creator & Live WhatsApp Preview (2-Column Grid) -->
+        <section class="composer-grid">
+
+            <!-- Left Column: Form Controls -->
+            <div class="glass-card composer-card">
+                <div class="card-title-row">
+                    <div class="title-with-icon">
+                        <span class="step-num">2</span>
+                        <div>
+                            <h2>Buat Jadwal Status</h2>
+                            <p class="section-desc">Atur konten teks, foto, dan jam tayang otomatis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="statusForm" class="composer-form">
+
+                    <!-- Type Switcher -->
+                    <div class="form-row">
+                        <label class="field-label">Tipe Status:</label>
+                        <div class="type-selector">
+                            <label class="type-card active">
+                                <input type="radio" name="statusType" value="TEXT" checked>
+                                <div class="type-content">
+                                    <span class="type-icon">✍️</span>
+                                    <span class="type-title">Status Teks</span>
+                                </div>
+                            </label>
+                            <label class="type-card">
+                                <input type="radio" name="statusType" value="IMAGE">
+                                <div class="type-content">
+                                    <span class="type-icon">🖼️</span>
+                                    <span class="type-title">Status Gambar</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Background Color Picker (For TEXT mode) -->
+                    <div class="form-row" id="colorPickerRow">
+                        <label class="field-label">Warna Latar Status:</label>
+                        <div class="color-palette">
+                            <button type="button" class="color-dot active" data-color="#075E54" style="background: #075E54;" title="WhatsApp Emerald"></button>
+                            <button type="button" class="color-dot" data-color="#264653" style="background: #264653;" title="Ocean Deep"></button>
+                            <button type="button" class="color-dot" data-color="#6A4C93" style="background: #6A4C93;" title="Royal Violet"></button>
+                            <button type="button" class="color-dot" data-color="#C0392B" style="background: #C0392B;" title="Crimson Red"></button>
+                            <button type="button" class="color-dot" data-color="#D35400" style="background: #D35400;" title="Sunset Orange"></button>
+                            <button type="button" class="color-dot" data-color="#1B263B" style="background: #1B263B;" title="Midnight Dark"></button>
+                        </div>
+                    </div>
+
+                    <!-- Image Uploader (For IMAGE mode) -->
+                    <div class="form-row" id="imageUploaderRow" style="display: none;">
+                        <label class="field-label">Pilih Gambar dari Galeri:</label>
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" id="fileImage" accept="image/*" class="hidden-file-input">
+                            <div class="drop-prompt" id="dropPrompt">
+                                <div class="upload-icon-circle">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                </div>
+                                <span class="upload-headline">Klik untuk memilih gambar</span>
+                                <span class="upload-sub">Mendukung format JPG, PNG, atau WebP</span>
+                            </div>
+                            <div class="image-thumb-wrapper" id="thumbWrapper" style="display: none;">
+                                <img id="thumbImg" src="" alt="Pratinjau">
+                                <button type="button" id="btnRemoveImage" class="btn-remove-thumb" title="Hapus gambar">✕</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text / Caption Input -->
+                    <div class="form-row">
+                        <div class="label-with-counter">
+                            <label class="field-label" for="textContent">Pesan Status / Caption:</label>
+                            <span id="charCounter" class="char-counter">0 karakter</span>
+                        </div>
+                        <textarea id="textContent" rows="3" class="input-modern textarea-modern" placeholder="Tulis apa yang ingin Anda bagikan ke status WhatsApp..."></textarea>
+                    </div>
+
+                    <!-- Quick Timing Presets -->
+                    <div class="form-row">
+                        <label class="field-label">Pilih Waktu Tayang Otomatis:</label>
+                        <div class="quick-presets">
+                            <button type="button" class="preset-pill" data-minutes="5">+5 Menit</button>
+                            <button type="button" class="preset-pill" data-minutes="15">+15 Menit</button>
+                            <button type="button" class="preset-pill" data-minutes="60">+1 Jam</button>
+                            <button type="button" class="preset-pill" data-preset="tomorrow-morning">Besok 07:00</button>
+                            <button type="button" class="preset-pill" data-preset="tomorrow-evening">Besok 19:00</button>
+                        </div>
+                        <div class="custom-time-picker">
+                            <span class="custom-label">Atau tentukan tanggal &amp; jam spesifik:</span>
+                            <input type="datetime-local" id="datetimeSchedule" class="input-modern datetime-field" required>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btnSubmit" class="btn btn-emerald-glow btn-block">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        <span>Simpan &amp; Jadwalkan Status</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Column: Live Smartphone Preview (Keren & Realistis) -->
+            <div class="preview-column">
+                <div class="preview-header-label">
+                    <span>📱 Pratinjau Tampilan di WhatsApp</span>
+                </div>
+                <div class="phone-mockup">
+                    <div class="phone-camera-cutout"></div>
+                    
+                    <!-- WhatsApp Status Screen Container -->
+                    <div id="mockupScreen" class="mockup-screen" style="background-color: #075E54;">
+                        
+                        <!-- Top Story Progress Bar -->
+                        <div class="mockup-bars">
+                            <div class="bar-fill"></div>
+                        </div>
+
+                        <!-- Top User Header -->
+                        <div class="mockup-user-bar">
+                            <div class="mockup-avatar">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </div>
+                            <div class="mockup-meta">
+                                <span class="mockup-username">Status Saya</span>
+                                <span class="mockup-time" id="mockupScheduledTime">Baru saja</span>
+                            </div>
+                        </div>
+
+                        <!-- Text Status Center View -->
+                        <div id="mockupTextBody" class="mockup-text-body">
+                            <p id="mockupTextContent">Tulis pesan status Anda di formulir...</p>
+                        </div>
+
+                        <!-- Image Status Background (Hidden initially) -->
+                        <img id="mockupImageBody" class="mockup-image-body" src="" alt="Pratinjau Foto" style="display: none;">
+
+                        <!-- Bottom Caption Overlay (For Image Mode) -->
+                        <div id="mockupCaptionBox" class="mockup-caption-box" style="display: none;">
+                            <p id="mockupCaptionText">Caption foto...</p>
+                        </div>
+
+                        <!-- Bottom Reply Bar -->
+                        <div class="mockup-bottom-bar">
+                            <div class="mockup-reply-pill">
+                                <span>Balas status...</span>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
-            <div id="schedulesContainer" class="schedules-grid">
-                <div class="empty-state">Memuat jadwal...</div>
+        </section>
+
+        <!-- 3. Schedules Management & History -->
+        <section class="glass-card list-card">
+            <div class="card-title-row">
+                <div class="title-with-icon">
+                    <span class="step-num">3</span>
+                    <div>
+                        <h2>Daftar Antrean &amp; Riwayat</h2>
+                        <p class="section-desc">Pantau status yang akan tayang atau sudah terkirim</p>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <button class="filter-chip active" data-filter="all">Semua</button>
+                    <button class="filter-chip" data-filter="PENDING">Menunggu</button>
+                    <button class="filter-chip" data-filter="COMPLETED">Terkirim</button>
+                    <button class="filter-chip" data-filter="FAILED">Gagal</button>
+                </div>
+            </div>
+
+            <div id="schedulesGrid" class="schedules-timeline">
+                <div class="loading-state">
+                    <div class="modern-spinner"></div>
+                    <span>Memuat daftar jadwal status...</span>
+                </div>
             </div>
         </section>
 
     </main>
 
+    <!-- Footer -->
     <footer class="app-footer">
-        <p>WA Status Scheduler • Berjalan di Server 24/7 Tanpa Aplikasi HP</p>
+        <p>WA Status Scheduler Pro • Dijalankan Otomatis 24/7 di Cloud Server</p>
     </footer>
 
     <script src="app.js"></script>
