@@ -162,8 +162,20 @@ startWhatsApp();
 
 // Shared status sender
 async function postStatusToWhatsApp(schedule) {
+    // If socket is reconnecting, wait up to 10 seconds before giving up
     if (connectionStatus !== 'connected' || !sock) {
-        throw new Error('WhatsApp sedang tidak terhubung. Silakan hubungkan WhatsApp terlebih dahulu.');
+        console.log('[WA] Socket belum siap, menunggu koneksi terhubung hingga 10 detik...');
+        for (let i = 0; i < 20; i++) {
+            await new Promise(r => setTimeout(r, 500));
+            if (connectionStatus === 'connected' && sock) {
+                console.log('[WA] Koneksi siap!');
+                break;
+            }
+        }
+    }
+
+    if (connectionStatus !== 'connected' || !sock) {
+        throw new Error('WhatsApp sedang menyambung ulang ke HP. Mohon coba klik Kirim Sekarang lagi dalam 5 detik.');
     }
 
     if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {

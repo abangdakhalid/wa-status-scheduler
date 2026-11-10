@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "id": "1794280127111",
+    "type": "TEXT",
+    "text": "Getcontact Promo\r\n\r\n10k aja",
+    "backgroundColor": "#075E54",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "DAILY",
+    "timeOfDay": "10:10",
+    "daysOfWeek": [],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": "2026-11-10",
+    "errorMessage": null,
+    "createdAt": 1794280127111,
+    "postedAt": 1794280248122
+  }
+]
