@@ -29,9 +29,17 @@
                 </div>
             </div>
 
-            <div id="connectionBadge" class="connection-pill pill-disconnected">
-                <span class="pulsing-dot"></span>
-                <span id="connectionText">Memeriksa Koneksi...</span>
+            <div class="header-right-group" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div id="cloudflareBadge" class="connection-pill" style="display: none; background: rgba(246, 130, 31, 0.15); border: 1px solid rgba(246, 130, 31, 0.45); color: #F6821F;">
+                    <span style="font-size: 14px;">☁️</span>
+                    <a id="cloudflareLink" href="#" target="_blank" style="color: #F6821F; text-decoration: underline; font-weight: 600; font-size: 12px;">Cloudflare Online</a>
+                    <button type="button" id="btnCopyCloudflare" style="background: none; border: none; cursor: pointer; color: #fff; padding: 0 4px; font-size: 13px;" title="Salin Link Cloudflare untuk HP">📋</button>
+                </div>
+
+                <div id="connectionBadge" class="connection-pill pill-disconnected">
+                    <span class="pulsing-dot"></span>
+                    <span id="connectionText">Memeriksa Koneksi...</span>
+                </div>
             </div>
         </div>
     </header>

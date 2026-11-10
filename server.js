@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { spawn } = require('child_process');
 const QRCode = require('qrcode');
 const pino = require('pino');
 const {
@@ -33,6 +34,51 @@ const DATA_DIR = path.join(__dirname, 'data');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const AUTH_DIR = path.join(__dirname, 'auth_info_baileys');
 const SCHEDULES_FILE = path.join(DATA_DIR, 'schedules.json');
+const CLOUDFLARED_BIN = path.join(__dirname, 'bin', 'cloudflared.exe');
+
+let cloudflareUrl = null;
+let tunnelProcess = null;
+
+function startCloudflareTunnel() {
+    if (!fs.existsSync(CLOUDFLARED_BIN)) {
+        console.log('[Cloudflare] Binari cloudflared.exe belum ditemukan.');
+        return;
+    }
+
+    console.log('[Cloudflare] Menghubungkan ke Cloudflare Tunnel...');
+    try {
+        tunnelProcess = spawn(CLOUDFLARED_BIN, ['tunnel', '--url', `http://localhost:${PORT}`]);
+
+        const parseUrl = (data) => {
+            const text = data.toString();
+            const match = text.match(/https:\/\/[a-zA-Z0-9-]+\.trycloudflare\.com/);
+            if (match && !cloudflareUrl) {
+                cloudflareUrl = match[0];
+                console.log('=================================================');
+                console.log(`☁️  CLOUDFLARE TUNNEL BERHASIL AKTIF!`);
+                console.log(`🌐 Link Cloudflare (Buka di HP): ${cloudflareUrl}`);
+                console.log('=================================================');
+            }
+        };
+
+        tunnelProcess.stdout.on('data', parseUrl);
+        tunnelProcess.stderr.on('data', parseUrl);
+
+        tunnelProcess.on('close', (code) => {
+            console.log(`[Cloudflare] Tunnel tertutup (kode ${code}). Menghubungkan ulang dalam 5 detik...`);
+            cloudflareUrl = null;
+            setTimeout(startCloudflareTunnel, 5000);
+        });
+    } catch (err) {
+        console.error('[Cloudflare] Gagal menjalankan tunnel:', err.message);
+    }
+}
+
+process.on('exit', () => {
+    if (tunnelProcess) {
+        try { tunnelProcess.kill(); } catch (e) {}
+    }
+});
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
@@ -204,6 +250,15 @@ app.get('/api/connection-status', (req, res) => {
         qr: qrCodeDataUrl,
         pairingCode: pairingCode,
         user: connectedUser
+    });
+});
+
+// 1b. Get Cloudflare & local access URLs
+app.get('/api/tunnel-info', (req, res) => {
+    res.json({
+        cloudflareUrl: cloudflareUrl,
+        localUrl: `http://localhost:${PORT}`,
+        wifiUrl: `http://192.168.1.11:${PORT}`
     });
 });
 
@@ -499,4 +554,5 @@ app.listen(PORT, () => {
     console.log(`🚀 WA Status Scheduler Web aktif di port ${PORT}`);
     console.log(`👉 Akses Dashboard: http://localhost:${PORT}`);
     console.log(`=================================================`);
+    startCloudflareTunnel();
 });

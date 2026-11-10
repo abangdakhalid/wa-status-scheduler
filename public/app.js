@@ -740,9 +740,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // --- Cloudflare Tunnel Info ---
+    const cloudflareBadge = document.getElementById('cloudflareBadge');
+    const cloudflareLink = document.getElementById('cloudflareLink');
+    const btnCopyCloudflare = document.getElementById('btnCopyCloudflare');
+    let currentCloudflareUrl = null;
+
+    async function checkTunnelInfo() {
+        try {
+            const res = await fetch('/api/tunnel-info');
+            const data = await res.json();
+            if (data.cloudflareUrl) {
+                currentCloudflareUrl = data.cloudflareUrl;
+                cloudflareBadge.style.display = 'inline-flex';
+                cloudflareLink.href = data.cloudflareUrl;
+                cloudflareLink.textContent = 'Link Cloudflare HP';
+            } else {
+                cloudflareBadge.style.display = 'none';
+            }
+        } catch (e) {}
+    }
+
+    btnCopyCloudflare?.addEventListener('click', () => {
+        if (currentCloudflareUrl) {
+            navigator.clipboard.writeText(currentCloudflareUrl).then(() => {
+                showToast('Link Cloudflare disalin! Buka link ini di browser HP Anda.', 'success');
+            }).catch(() => {
+                showToast(`Link: ${currentCloudflareUrl}`, 'info');
+            });
+        }
+    });
+
     // Initial triggers & polling intervals
     checkConnection();
     loadSchedules();
+    checkTunnelInfo();
     setInterval(checkConnection, 2500);
     setInterval(loadSchedules, 8000);
+    setInterval(checkTunnelInfo, 5000);
 });
