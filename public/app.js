@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allSchedules = [];
     let countdownInterval = null;
 
-    // UI References
+    // UI References - Header & Auth
     const connectionBadge = document.getElementById('connectionBadge');
     const connectionText = document.getElementById('connectionText');
     const connectedView = document.getElementById('connectedView');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userPhoneDisplay = document.getElementById('userPhoneDisplay');
     const btnLogout = document.getElementById('btnLogout');
 
-    // Tabs & Auth
+    // QR & Pairing Tabs
     const segmentBtns = document.querySelectorAll('.segment-btn');
     const tabPanes = document.querySelectorAll('.tab-pane');
     const phoneInput = document.getElementById('phoneInput');
@@ -24,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCopyCode = document.getElementById('btnCopyCode');
     const qrImg = document.getElementById('qrImg');
     const qrSpinner = document.getElementById('qrSpinner');
+    const btnRefreshQr = document.getElementById('btnRefreshQr');
 
-    // Composer & Mockup
+    // Composer Form Elements
     const statusForm = document.getElementById('statusForm');
     const typeCards = document.querySelectorAll('.type-card');
     const colorPickerRow = document.getElementById('colorPickerRow');
@@ -39,9 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnRemoveImage = document.getElementById('btnRemoveImage');
     const textContent = document.getElementById('textContent');
     const charCounter = document.getElementById('charCounter');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    // Repeat Frequency Elements
+    const repeatCards = document.querySelectorAll('.repeat-card');
+    const sectionOnce = document.getElementById('sectionOnce');
+    const sectionDaily = document.getElementById('sectionDaily');
+    const sectionCustomDays = document.getElementById('sectionCustomDays');
     const presetPills = document.querySelectorAll('.preset-pill');
     const datetimeSchedule = document.getElementById('datetimeSchedule');
-    const btnSubmit = document.getElementById('btnSubmit');
+    const timeDaily = document.getElementById('timeDaily');
+    const timeCustom = document.getElementById('timeCustom');
+    const daysCheckboxes = document.querySelectorAll('input[name="daysCheck"]');
 
     // Phone Mockup Elements
     const mockupScreen = document.getElementById('mockupScreen');
@@ -52,18 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const mockupCaptionText = document.getElementById('mockupCaptionText');
     const mockupScheduledTime = document.getElementById('mockupScheduledTime');
 
-    // Timeline Grid
+    // Timeline / Schedule Grid
     const filterChips = document.querySelectorAll('.filter-chip');
     const schedulesGrid = document.getElementById('schedulesGrid');
 
     // --- Toast Notification Helper ---
     function showToast(message, type = 'success') {
         const container = document.getElementById('toastContainer');
+        if (!container) return;
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         
         const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
-        toast.innerHTML = `<span style="font-weight: 800;">${icon}</span><span>${message}</span>`;
+        toast.innerHTML = `<span style="font-weight: 800; font-size: 16px;">${icon}</span><span>${message}</span>`;
         container.appendChild(toast);
 
         setTimeout(() => {
@@ -71,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.style.transform = 'translateY(-10px)';
             toast.style.transition = 'all 0.3s ease';
             setTimeout(() => toast.remove(), 300);
-        }, 3500);
+        }, 3800);
     }
 
     // --- Datetime Helper ---
@@ -82,23 +93,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Default Datetime (+10 minutes)
     const initialTime = new Date(Date.now() + 10 * 60000);
-    datetimeSchedule.value = formatToLocalISO(initialTime);
-    datetimeSchedule.min = formatToLocalISO(new Date());
+    if (datetimeSchedule) {
+        datetimeSchedule.value = formatToLocalISO(initialTime);
+        datetimeSchedule.min = formatToLocalISO(new Date());
+    }
+
+    // Day name abbreviations in Indonesian
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
     // Update Mockup Scheduled Time Label
     function updateMockupTimeLabel() {
-        const val = datetimeSchedule.value;
-        if (val) {
-            const d = new Date(val);
-            mockupScheduledTime.textContent = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        } else {
-            mockupScheduledTime.textContent = 'Baru saja';
+        const activeRepeat = document.querySelector('input[name="repeatType"]:checked')?.value || 'ONCE';
+
+        if (activeRepeat === 'ONCE') {
+            const val = datetimeSchedule.value;
+            if (val) {
+                const d = new Date(val);
+                mockupScheduledTime.textContent = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                mockupScheduledTime.textContent = 'Baru saja';
+            }
+        } else if (activeRepeat === 'DAILY') {
+            const time = timeDaily?.value || '08:00';
+            mockupScheduledTime.textContent = `Tiap Hari ${time}`;
+        } else if (activeRepeat === 'CUSTOM_DAYS') {
+            const selectedDays = Array.from(daysCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => dayNames[parseInt(cb.value, 10)])
+                .join(',');
+            const time = timeCustom?.value || '08:00';
+            mockupScheduledTime.textContent = selectedDays ? `${selectedDays} ${time}` : `Jam ${time}`;
         }
     }
-    datetimeSchedule.addEventListener('input', updateMockupTimeLabel);
+
+    datetimeSchedule?.addEventListener('input', updateMockupTimeLabel);
+    timeDaily?.addEventListener('input', updateMockupTimeLabel);
+    timeCustom?.addEventListener('input', updateMockupTimeLabel);
+    daysCheckboxes.forEach(cb => cb.addEventListener('change', updateMockupTimeLabel));
     updateMockupTimeLabel();
 
-    // --- Quick Timing Presets ---
+    // --- Quick Timing Presets (For ONCE mode) ---
     presetPills.forEach(pill => {
         pill.addEventListener('click', () => {
             presetPills.forEach(p => p.classList.remove('active'));
@@ -124,6 +158,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Repeat Frequency Tabs (Sekali, Setiap Hari, Hari Tertentu) ---
+    repeatCards.forEach(card => {
+        card.addEventListener('click', () => {
+            repeatCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
+            const mode = radio?.value || 'ONCE';
+            if (mode === 'ONCE') {
+                sectionOnce.style.display = 'block';
+                sectionDaily.style.display = 'none';
+                sectionCustomDays.style.display = 'none';
+            } else if (mode === 'DAILY') {
+                sectionOnce.style.display = 'none';
+                sectionDaily.style.display = 'block';
+                sectionCustomDays.style.display = 'none';
+            } else if (mode === 'CUSTOM_DAYS') {
+                sectionOnce.style.display = 'none';
+                sectionDaily.style.display = 'none';
+                sectionCustomDays.style.display = 'block';
+            }
+            updateMockupTimeLabel();
+        });
+    });
+
     // --- Segmented Control (Pairing Code vs QR) ---
     segmentBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -132,9 +192,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
             btn.classList.add('active');
             const target = btn.dataset.tab === 'pairing' ? 'tabPairing' : 'tabQr';
-            document.getElementById(target).classList.add('active');
+            document.getElementById(target)?.classList.add('active');
         });
     });
+
+    // --- Refresh QR Code Button ---
+    if (btnRefreshQr) {
+        btnRefreshQr.addEventListener('click', async () => {
+            try {
+                btnRefreshQr.disabled = true;
+                btnRefreshQr.innerHTML = `
+                    <div class="modern-spinner" style="width: 14px; height: 14px; border-width: 2px; display: inline-block;"></div>
+                    <span>Memperbarui Barcode...</span>
+                `;
+                qrImg.style.display = 'none';
+                qrSpinner.style.display = 'block';
+                showToast('Membuat Barcode baru, mohon tunggu...', 'info');
+
+                const res = await fetch('/api/refresh-qr', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Barcode baru sedang disiapkan. Arahkan kamera HP Anda!', 'success');
+                } else {
+                    showToast(data.message || 'Gagal memuat barcode baru.', 'error');
+                }
+            } catch (err) {
+                showToast('Gagal terhubung ke server untuk memuat barcode.', 'error');
+            } finally {
+                setTimeout(() => {
+                    btnRefreshQr.disabled = false;
+                    btnRefreshQr.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                        <span>🔄 Muat Ulang / Segarkan Barcode</span>
+                    `;
+                    checkConnection();
+                }, 2000);
+            }
+        });
+    }
 
     // --- Type Switcher (TEXT vs IMAGE) ---
     typeCards.forEach(card => {
@@ -142,9 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
             typeCards.forEach(c => c.classList.remove('active'));
             card.classList.add('active');
             const radio = card.querySelector('input[type="radio"]');
-            radio.checked = true;
+            if (radio) radio.checked = true;
 
-            if (radio.value === 'IMAGE') {
+            if (radio?.value === 'IMAGE') {
                 imageUploaderRow.style.display = 'block';
                 colorPickerRow.style.display = 'none';
                 textContent.placeholder = 'Tulis caption gambar status (opsional)...';
@@ -174,11 +272,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Live Text Sync to Mockup & Counter ---
-    textContent.addEventListener('input', () => {
+    textContent?.addEventListener('input', () => {
         const val = textContent.value;
-        charCounter.textContent = `${val.length} karakter`;
+        if (charCounter) charCounter.textContent = `${val.length} karakter`;
 
-        const isImage = document.querySelector('input[name="statusType"]:checked').value === 'IMAGE';
+        const isImage = document.querySelector('input[name="statusType"]:checked')?.value === 'IMAGE';
         if (isImage) {
             mockupCaptionText.textContent = val || 'Caption foto...';
             mockupCaptionBox.style.display = val.trim() ? 'block' : 'none';
@@ -188,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Image Upload & Mockup Sync ---
-    fileImage.addEventListener('change', () => {
+    fileImage?.addEventListener('change', () => {
         const file = fileImage.files[0];
         if (file) {
             const reader = new FileReader();
@@ -206,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    btnRemoveImage.addEventListener('click', (e) => {
+    btnRemoveImage?.addEventListener('click', (e) => {
         e.stopPropagation();
         fileImage.value = '';
         thumbImg.src = '';
@@ -217,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Copy Pairing Code Button ---
-    btnCopyCode.addEventListener('click', () => {
+    btnCopyCode?.addEventListener('click', () => {
         const code = pairingCodeDisplay.textContent.replace(/\s+/g, '');
         if (code && code !== '--------') {
             navigator.clipboard.writeText(code).then(() => {
@@ -229,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Request Pairing Code ---
-    btnRequestPairing.addEventListener('click', async () => {
+    btnRequestPairing?.addEventListener('click', async () => {
         let phone = phoneInput.value.trim();
         if (!phone) {
             showToast('Silakan masukkan nomor WhatsApp Anda!', 'error');
@@ -237,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Format phone: if starts with 08, convert to 628
         phone = phone.replace(/[^0-9]/g, '');
         if (phone.startsWith('0')) phone = '62' + phone.slice(1);
         else if (!phone.startsWith('62')) phone = '62' + phone;
@@ -254,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.success && data.code) {
-                // Format code with space in middle: e.g. ABCD-1234 -> ABCD 1234
                 const formatted = data.code.includes('-') ? data.code.replace('-', ' ') : `${data.code.slice(0, 4)} ${data.code.slice(4)}`;
                 pairingCodeDisplay.textContent = formatted;
                 pairingResultBox.style.display = 'block';
@@ -277,11 +373,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Logout ---
-    btnLogout.addEventListener('click', async () => {
+    btnLogout?.addEventListener('click', async () => {
         if (!confirm('Putuskan koneksi WhatsApp dari server?')) return;
         try {
             await fetch('/api/logout', { method: 'POST' });
-            showToast('Koneksi WhatsApp diputuskan.', 'info');
+            showToast('Koneksi WhatsApp diputuskan. Barcode baru siap.', 'info');
             checkConnection();
         } catch (e) {
             showToast('Gagal memutuskan koneksi.', 'error');
@@ -289,23 +385,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Submit Schedule Form ---
-    statusForm.addEventListener('submit', async (e) => {
+    statusForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const selectedType = document.querySelector('input[name="statusType"]:checked').value;
+        const selectedType = document.querySelector('input[name="statusType"]:checked')?.value || 'TEXT';
+        const repeatType = document.querySelector('input[name="repeatType"]:checked')?.value || 'ONCE';
         const textVal = textContent.value.trim();
-        const dateVal = datetimeSchedule.value;
-
-        if (!dateVal) {
-            showToast('Tentukan waktu tayang status!', 'error');
-            return;
-        }
-
-        const targetTimestamp = new Date(dateVal).getTime();
-        if (targetTimestamp <= Date.now()) {
-            showToast('Waktu posting harus lebih dari waktu saat ini!', 'error');
-            return;
-        }
 
         if (selectedType === 'IMAGE' && (!fileImage.files || !fileImage.files[0])) {
             showToast('Silakan pilih berkas gambar yang ingin diunggah!', 'error');
@@ -319,11 +404,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('type', selectedType);
+        formData.append('repeatType', repeatType);
         formData.append('text', textVal);
-        formData.append('scheduledTimestamp', targetTimestamp);
         formData.append('backgroundColor', selectedColor);
+
         if (selectedType === 'IMAGE' && fileImage.files[0]) {
             formData.append('image', fileImage.files[0]);
+        }
+
+        // Timing validation based on repeatType
+        if (repeatType === 'ONCE') {
+            const dateVal = datetimeSchedule.value;
+            if (!dateVal) {
+                showToast('Tentukan tanggal & jam tayang status!', 'error');
+                return;
+            }
+            const targetTimestamp = new Date(dateVal).getTime();
+            if (targetTimestamp <= Date.now() - 30000) {
+                showToast('Waktu posting harus lebih dari waktu saat ini!', 'error');
+                return;
+            }
+            formData.append('scheduledTimestamp', targetTimestamp);
+        } else if (repeatType === 'DAILY') {
+            const timeVal = timeDaily?.value;
+            if (!timeVal) {
+                showToast('Pilih jam tayang harian!', 'error');
+                return;
+            }
+            formData.append('timeOfDay', timeVal);
+        } else if (repeatType === 'CUSTOM_DAYS') {
+            const timeVal = timeCustom?.value;
+            if (!timeVal) {
+                showToast('Pilih jam tayang untuk hari yang dipilih!', 'error');
+                return;
+            }
+            const selectedDays = Array.from(daysCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => parseInt(cb.value, 10));
+
+            if (selectedDays.length === 0) {
+                showToast('Pilih minimal satu hari dalam seminggu!', 'error');
+                return;
+            }
+            formData.append('timeOfDay', timeVal);
+            formData.append('daysOfWeek', JSON.stringify(selectedDays));
         }
 
         btnSubmit.disabled = true;
@@ -339,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 showToast('Jadwal status berhasil disimpan!', 'success');
                 textContent.value = '';
-                charCounter.textContent = '0 karakter';
+                if (charCounter) charCounter.textContent = '0 karakter';
                 mockupTextContent.textContent = 'Tulis pesan status Anda di formulir...';
                 mockupCaptionBox.style.display = 'none';
 
@@ -393,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 disconnectedView.style.display = 'none';
 
                 userNameDisplay.textContent = data.user?.name || 'WhatsApp Anda';
-                userPhoneDisplay.textContent = data.user?.id ? `Nomor: +${data.user.id}` : 'Server cloud aktif dan siap mengirim status 24/7.';
+                userPhoneDisplay.textContent = data.user?.id ? `Nomor: +${data.user.id}` : 'Server siap mengirim status otomatis sesuai jadwal.';
             } else {
                 connectionBadge.className = 'connection-pill pill-disconnected';
                 connectionText.textContent = 'Belum Terhubung';
@@ -429,14 +553,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSchedules() {
         let filtered = allSchedules;
         if (currentFilter !== 'all') {
-            filtered = allSchedules.filter(s => s.status === currentFilter);
+            if (currentFilter === 'PENDING') {
+                filtered = allSchedules.filter(s => s.status === 'PENDING' || s.status === 'ACTIVE');
+            } else {
+                filtered = allSchedules.filter(s => s.status === currentFilter);
+            }
         }
 
-        // Sort pending first, then by scheduledTimestamp ascending
+        // Sort: pending/active first, then newer
         filtered.sort((a, b) => {
-            if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
-            if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
-            return a.scheduledTimestamp - b.scheduledTimestamp;
+            const aIsActive = (a.status === 'PENDING' || a.status === 'ACTIVE');
+            const bIsActive = (b.status === 'PENDING' || b.status === 'ACTIVE');
+            if (aIsActive && !bIsActive) return -1;
+            if (!aIsActive && bIsActive) return 1;
+            return (b.createdAt || 0) - (a.createdAt || 0);
         });
 
         if (filtered.length === 0) {
@@ -450,28 +580,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         schedulesGrid.innerHTML = filtered.map(item => {
-            const dateObj = new Date(item.scheduledTimestamp);
-            const dateStr = dateObj.toLocaleString('id-ID', {
-                weekday: 'short',
-                day: 'numeric',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            // Status Badge & Countdown
-            let statusBadge = '';
+            const isRecurring = item.repeatType === 'DAILY' || item.repeatType === 'CUSTOM_DAYS';
+            
+            // Format Timing Description
+            let timingText = '';
             let countdownHtml = '';
-            let actionSendBtn = '';
 
-            if (item.status === 'PENDING') {
+            if (item.repeatType === 'DAILY') {
+                timingText = `🔁 <b>Setiap Hari</b> • Jam <b>${item.timeOfDay || '08:00'}</b>`;
+                if (item.lastTriggeredDate) {
+                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir: ${item.lastTriggeredDate})</span>`;
+                }
+            } else if (item.repeatType === 'CUSTOM_DAYS') {
+                const daysList = (item.daysOfWeek || []).map(d => dayNames[d]).join(', ');
+                timingText = `🗓️ <b>${daysList || 'Hari Tertentu'}</b> • Jam <b>${item.timeOfDay || '08:00'}</b>`;
+                if (item.lastTriggeredDate) {
+                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir: ${item.lastTriggeredDate})</span>`;
+                }
+            } else {
+                const dateObj = new Date(item.scheduledTimestamp);
+                const dateStr = dateObj.toLocaleString('id-ID', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                timingText = `📅 <b>Sekali Saja:</b> ${dateStr}`;
+
+                if (item.status === 'PENDING') {
+                    countdownHtml = `<span class="countdown-badge" data-time="${item.scheduledTimestamp}">⏳ Menghitung...</span>`;
+                }
+            }
+
+            // Status Badge
+            let statusBadge = '';
+            let actionSendBtn = `
+                <button class="btn-action-send" onclick="sendScheduleNow('${item.id}')" title="Kirim status ini sekarang ke WhatsApp">
+                    ⚡ Kirim Sekarang
+                </button>
+            `;
+
+            if (item.status === 'ACTIVE') {
+                statusBadge = '<span class="status-badge-pill badge-pending">🔁 AKTIF (RUTIN)</span>';
+            } else if (item.status === 'PENDING') {
                 statusBadge = '<span class="status-badge-pill badge-pending">MENUNGGU</span>';
-                countdownHtml = `<span class="countdown-badge" data-time="${item.scheduledTimestamp}">⏳ Menghitung...</span>`;
-                actionSendBtn = `
-                    <button class="btn-action-send" onclick="sendScheduleNow('${item.id}')" title="Kirim status ini sekarang ke WhatsApp">
-                        ⚡ Kirim Sekarang
-                    </button>
-                `;
             } else if (item.status === 'COMPLETED') {
                 statusBadge = '<span class="status-badge-pill badge-completed">✓ TERKIRIM</span>';
             } else {
@@ -495,11 +648,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polyline points="12 6 12 12 16 14"></polyline>
                                 </svg>
-                                ${dateStr}
+                                <span>${timingText}</span>
                             </span>
                             ${countdownHtml}
                         </div>
-                        <div class="schedule-caption-text">${escapeHtml(item.text) || '<i>(Tanpa teks)</i>'}</div>
+                        <div class="schedule-caption-text">${escapeHtml(item.text) || '<i>(Tanpa teks / Hanya Gambar)</i>'}</div>
                         <div>${statusBadge}</div>
                     </div>
                     <div class="schedule-actions">
@@ -518,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCountdowns();
     }
 
-    // --- Live Countdown Calculation ---
+    // --- Live Countdown Calculation (For ONCE schedules) ---
     function updateCountdowns() {
         const badges = document.querySelectorAll('.countdown-badge');
         const now = Date.now();
@@ -572,12 +725,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.success) {
-                showToast('Status berhasil terkirim ke WhatsApp!', 'success');
+                showToast('Status berhasil dikirim ke WhatsApp!', 'success');
                 loadSchedules();
             } else {
                 showToast(data.error || 'Gagal mengirim status.', 'error');
             }
-        } catch (e) {
+        } catch (err) {
             showToast('Terjadi kesalahan saat mengirim.', 'error');
         }
     };
@@ -587,9 +740,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Initial triggers & intervals
+    // Initial triggers & polling intervals
     checkConnection();
     loadSchedules();
-    setInterval(checkConnection, 3500);
+    setInterval(checkConnection, 2500);
     setInterval(loadSchedules, 8000);
 });

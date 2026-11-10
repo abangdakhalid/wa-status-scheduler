@@ -86,6 +86,9 @@ body {
 .toast.toast-error {
     border-color: var(--danger);
 }
+.toast.toast-info {
+    border-color: #3B82F6;
+}
 
 @keyframes toastSlideIn {
     from { opacity: 0; transform: translateY(-12px) scale(0.95); }
@@ -455,7 +458,7 @@ body {
     color: var(--text-muted);
 }
 
-/* QR Code Container */
+/* QR Code Container & Action */
 .qr-container {
     display: flex;
     justify-content: center;
@@ -468,11 +471,17 @@ body {
 }
 
 .qr-container img {
-    max-width: 210px;
+    max-width: 220px;
     border-radius: var(--radius-md);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     background: white;
-    padding: 8px;
+    padding: 10px;
+}
+
+.qr-action-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
 }
 
 /* 2-Column Composer Grid */
@@ -559,6 +568,118 @@ body {
     font-size: 14px;
     font-weight: 700;
     color: var(--text-main);
+}
+
+/* Repeat Frequency Selector (NEW: Sekali, Setiap Hari, Hari Tertentu) */
+.repeat-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.repeat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #0B141A;
+    border: 1.5px solid var(--border-subtle);
+    padding: 12px 8px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.repeat-card input {
+    position: absolute;
+    opacity: 0;
+}
+
+.repeat-card:hover {
+    border-color: var(--border-hover);
+}
+
+.repeat-card.active {
+    border-color: var(--brand-primary);
+    background: rgba(0, 168, 132, 0.12);
+    box-shadow: 0 0 14px var(--brand-glow);
+}
+
+.repeat-icon {
+    font-size: 18px;
+}
+
+.repeat-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Sub-sections for Timing */
+.timing-sub-section {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-top: 10px;
+}
+
+.time-picker-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.time-field {
+    max-width: 200px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* Days of Week Chips */
+.days-chips-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.day-chip {
+    cursor: pointer;
+}
+
+.day-chip input {
+    position: absolute;
+    opacity: 0;
+}
+
+.day-chip span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: #0B141A;
+    border: 1.5px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.day-chip:hover span {
+    border-color: var(--brand-primary);
+    color: var(--text-main);
+}
+
+.day-chip input:checked + span {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: white;
+    box-shadow: 0 0 10px var(--brand-glow);
 }
 
 /* Color Palette */
@@ -734,7 +855,7 @@ body {
     color: var(--text-dim);
 }
 
-.datetime-field {
+.datetime-field, .time-field {
     color-scheme: dark;
 }
 
@@ -784,6 +905,20 @@ body {
 .btn-danger-soft:hover {
     background: var(--danger);
     color: white;
+}
+
+.btn-secondary-soft {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
+    font-size: 13px;
+    padding: 10px 18px;
+}
+
+.btn-secondary-soft:hover {
+    background: rgba(0, 168, 132, 0.15);
+    border-color: var(--brand-primary);
+    color: #4EFEB3;
 }
 
 .btn-block {
@@ -968,6 +1103,7 @@ body {
     padding: 4px;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
 }
 
 .filter-chip {
@@ -1076,6 +1212,14 @@ body {
     text-overflow: ellipsis;
 }
 
+.badges-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
 .status-badge-pill {
     display: inline-block;
     font-size: 10px;
@@ -1083,13 +1227,18 @@ body {
     letter-spacing: 0.05em;
     padding: 3px 8px;
     border-radius: var(--radius-full);
-    margin-top: 6px;
 }
 
 .badge-pending {
     background: var(--warning-soft);
     color: #FBBF24;
     border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.badge-active {
+    background: rgba(0, 168, 132, 0.18);
+    color: #4EFEB3;
+    border: 1px solid rgba(0, 168, 132, 0.4);
 }
 
 .badge-completed {
@@ -1199,5 +1348,8 @@ body {
         font-size: 24px;
         letter-spacing: 4px;
         padding: 10px 16px;
+    }
+    .repeat-selector {
+        grid-template-columns: 1fr;
     }
 }

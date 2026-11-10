@@ -75,7 +75,13 @@ let connectedUser = null;
 async function startWhatsApp() {
     try {
         const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
-        const { version } = await fetchLatestBaileysVersion();
+        let version;
+        try {
+            const v = await fetchLatestBaileysVersion();
+            version = v.version;
+        } catch (e) {
+            console.warn('[WA] Menggunakan versi fallback Baileys');
+        }
 
         sock = makeWASocket({
             version,
@@ -92,10 +98,10 @@ async function startWhatsApp() {
 
             if (qr) {
                 try {
-                    qrCodeDataUrl = await QRCode.toDataURL(qr);
+                    qrCodeDataUrl = await QRCode.toDataURL(qr, { scale: 8, margin: 2 });
                     connectionStatus = 'qr_ready';
                     pairingCode = null;
-                    console.log('[WA] QR Code siap dipindai');
+                    console.log('[WA] QR Code baru siap dipindai');
                 } catch (err) {
                     console.error('[WA] Gagal generate QR Code', err);
                 }
@@ -103,13 +109,19 @@ async function startWhatsApp() {
 
             if (connection === 'close') {
                 const statusCode = (lastDisconnect?.error)?.output?.statusCode;
-                const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-                console.log('[WA] Koneksi terputus. Kode:', statusCode, '| Reconnect:', shouldReconnect);
+                console.log('[WA] Koneksi terputus. Kode:', statusCode);
                 connectionStatus = 'disconnected';
                 qrCodeDataUrl = null;
                 connectedUser = null;
 
-                if (shouldReconnect) {
+                if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
+                    console.log('[WA] Sesi logout/kadaluwarsa. Membersihkan autentikasi...');
+                    if (fs.existsSync(AUTH_DIR)) {
+                        try { fs.rmSync(AUTH_DIR, { recursive: true, force: true }); } catch (e) {}
+                    }
+                    setTimeout(startWhatsApp, 1500);
+                } else {
+                    console.log('[WA] Menghubungkan ulang dalam 3 detik...');
                     setTimeout(startWhatsApp, 3000);
                 }
             } else if (connection === 'open') {
@@ -136,7 +148,7 @@ startWhatsApp();
 // Shared status sender
 async function postStatusToWhatsApp(schedule) {
     if (connectionStatus !== 'connected' || !sock) {
-        throw new Error('WhatsApp sedang tidak terhubung');
+        throw new Error('WhatsApp sedang tidak terhubung. Silakan hubungkan WhatsApp terlebih dahulu.');
     }
 
     if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {
@@ -168,7 +180,33 @@ app.get('/api/connection-status', (req, res) => {
     });
 });
 
-// 2. Request pairing code (alternative to QR scan for mobile users)
+// 2. Refresh QR Code (Clears state & forces fresh QR immediately)
+app.post('/api/refresh-qr', async (req, res) => {
+    try {
+        console.log('[WA] Meminta QR Code baru...');
+        if (connectionStatus !== 'connected') {
+            if (sock) {
+                try { sock.end(new Error('Refreshing QR')); } catch (e) {}
+                sock = null;
+            }
+            if (fs.existsSync(AUTH_DIR)) {
+                try { fs.rmSync(AUTH_DIR, { recursive: true, force: true }); } catch (e) {}
+            }
+            connectionStatus = 'connecting';
+            qrCodeDataUrl = null;
+            pairingCode = null;
+            setTimeout(startWhatsApp, 1000);
+            return res.json({ success: true, message: 'QR Code baru sedang dibuat...' });
+        } else {
+            return res.json({ success: true, message: 'WhatsApp sudah terhubung!' });
+        }
+    } catch (err) {
+        console.error('[WA] Error refresh QR:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 3. Request pairing code (alternative to QR scan for mobile users)
 app.post('/api/pairing-code', async (req, res) => {
     let { phone } = req.body;
     if (!phone) {
@@ -180,6 +218,8 @@ app.post('/api/pairing-code', async (req, res) => {
         // Auto convert 08xx to 628xx
         if (cleanPhone.startsWith('0')) {
             cleanPhone = '62' + cleanPhone.slice(1);
+        } else if (!cleanPhone.startsWith('62')) {
+            cleanPhone = '62' + cleanPhone;
         }
 
         if (sock && !sock.authState.creds.registered) {
@@ -195,14 +235,14 @@ app.post('/api/pairing-code', async (req, res) => {
     }
 });
 
-// 3. Disconnect / Logout
+// 4. Disconnect / Logout
 app.post('/api/logout', async (req, res) => {
     try {
         if (sock) {
             try { await sock.logout(); } catch (e) {}
         }
         if (fs.existsSync(AUTH_DIR)) {
-            fs.rmSync(AUTH_DIR, { recursive: true, force: true });
+            try { fs.rmSync(AUTH_DIR, { recursive: true, force: true }); } catch (e) {}
         }
         connectionStatus = 'disconnected';
         connectedUser = null;
@@ -215,24 +255,25 @@ app.post('/api/logout', async (req, res) => {
     }
 });
 
-// 4. Get all schedules
+// 5. Get all schedules
 app.get('/api/schedules', (req, res) => {
     res.json(getSchedules());
 });
 
-// 5. Create new schedule
+// 6. Create new schedule (Supports ONCE, DAILY, and CUSTOM_DAYS)
 app.post('/api/schedules', upload.single('image'), (req, res) => {
     try {
-        const { type, text, scheduledTimestamp, backgroundColor } = req.body;
+        const {
+            type,
+            text,
+            backgroundColor,
+            repeatType,       // 'ONCE' | 'DAILY' | 'CUSTOM_DAYS'
+            timeOfDay,        // '08:30' (HH:mm)
+            daysOfWeek,       // JSON string array e.g. '[1,3,5]'
+            scheduledTimestamp
+        } = req.body;
 
-        if (!scheduledTimestamp) {
-            return res.status(400).json({ error: 'Waktu jadwal harus diisi!' });
-        }
-
-        const targetTime = parseInt(scheduledTimestamp, 10);
-        if (isNaN(targetTime) || targetTime <= Date.now() - 60000) {
-            return res.status(400).json({ error: 'Waktu jadwal harus lebih dari waktu sekarang!' });
-        }
+        const mode = repeatType || 'ONCE';
 
         if (type === 'IMAGE' && !req.file) {
             return res.status(400).json({ error: 'Silakan pilih gambar terlebih dahulu!' });
@@ -240,6 +281,53 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
 
         if (type === 'TEXT' && (!text || !text.trim())) {
             return res.status(400).json({ error: 'Teks status tidak boleh kosong!' });
+        }
+
+        let targetTime = null;
+        let parsedDays = [];
+
+        if (mode === 'ONCE') {
+            if (!scheduledTimestamp) {
+                return res.status(400).json({ error: 'Waktu tanggal & jam harus ditentukan!' });
+            }
+            targetTime = parseInt(scheduledTimestamp, 10);
+            if (isNaN(targetTime) || targetTime <= Date.now() - 60000) {
+                return res.status(400).json({ error: 'Waktu jadwal harus lebih dari waktu sekarang!' });
+            }
+        } else {
+            // DAILY or CUSTOM_DAYS requires timeOfDay (HH:mm)
+            if (!timeOfDay || !/^\d{2}:\d{2}$/.test(timeOfDay)) {
+                return res.status(400).json({ error: 'Jam posting harus ditentukan (format JJ:MM)!' });
+            }
+
+            if (mode === 'CUSTOM_DAYS') {
+                try {
+                    parsedDays = JSON.parse(daysOfWeek || '[]');
+                } catch (e) {
+                    parsedDays = [];
+                }
+                parsedDays = parsedDays.map(d => parseInt(d, 10)).filter(d => !isNaN(d));
+                if (!Array.isArray(parsedDays) || parsedDays.length === 0) {
+                    return res.status(400).json({ error: 'Pilih minimal satu hari dalam seminggu!' });
+                }
+            }
+        }
+
+        const now = new Date();
+        const todayDateStr = now.toLocaleDateString('en-CA');
+        const currentHourStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+        let initialLastTriggeredDate = null;
+        // If daily or custom day schedule is set for a time that already passed today, start from tomorrow
+        if (mode === 'DAILY') {
+            if (currentHourStr >= timeOfDay) {
+                initialLastTriggeredDate = todayDateStr;
+            }
+        } else if (mode === 'CUSTOM_DAYS') {
+            const currentDayOfWeek = now.getDay();
+            if (parsedDays.includes(currentDayOfWeek) && currentHourStr >= timeOfDay) {
+                initialLastTriggeredDate = todayDateStr;
+            }
         }
 
         const schedules = getSchedules();
@@ -250,8 +338,12 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
             backgroundColor: backgroundColor || '#075E54',
             imagePath: req.file ? req.file.path : null,
             imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+            repeatType: mode,
+            timeOfDay: timeOfDay || null,
+            daysOfWeek: parsedDays,
             scheduledTimestamp: targetTime,
-            status: 'PENDING',
+            status: mode === 'ONCE' ? 'PENDING' : 'ACTIVE',
+            lastTriggeredDate: initialLastTriggeredDate,
             errorMessage: null,
             createdAt: Date.now()
         };
@@ -259,7 +351,7 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
         schedules.push(newSchedule);
         saveSchedules(schedules);
 
-        console.log(`[Jadwal] Status baru dijadwalkan untuk ${new Date(targetTime).toLocaleString('id-ID')}`);
+        console.log(`[Jadwal] Jadwal baru dibuat: tipe ${mode}`);
         res.json({ success: true, schedule: newSchedule });
     } catch (err) {
         console.error('[Jadwal] Error creating schedule:', err);
@@ -267,7 +359,7 @@ app.post('/api/schedules', upload.single('image'), (req, res) => {
     }
 });
 
-// 6. Send Immediately (Test / Instant Post)
+// 7. Send Immediately (Test / Instant Post)
 app.post('/api/schedules/:id/send-now', async (req, res) => {
     const { id } = req.params;
     const schedules = getSchedules();
@@ -279,7 +371,9 @@ app.post('/api/schedules/:id/send-now', async (req, res) => {
 
     try {
         await postStatusToWhatsApp(item);
-        item.status = 'COMPLETED';
+        if (item.repeatType === 'ONCE') {
+            item.status = 'COMPLETED';
+        }
         item.postedAt = Date.now();
         item.errorMessage = null;
         saveSchedules(schedules);
@@ -289,7 +383,7 @@ app.post('/api/schedules/:id/send-now', async (req, res) => {
     }
 });
 
-// 7. Delete schedule
+// 8. Delete schedule
 app.delete('/api/schedules/:id', (req, res) => {
     const { id } = req.params;
     let schedules = getSchedules();
@@ -307,24 +401,61 @@ app.delete('/api/schedules/:id', (req, res) => {
 // Scheduler Engine: Runs every 15 seconds to process due schedules
 setInterval(async () => {
     const schedules = getSchedules();
-    const now = Date.now();
+    const now = new Date();
+    const nowTimestamp = now.getTime();
+
+    // Local YYYY-MM-DD
+    const todayDateStr = now.toLocaleDateString('en-CA');
+    // Local HH:mm (e.g. "09:30")
+    const currentHourStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+    // Day of week: 0=Minggu, 1=Senin, ..., 6=Sabtu
+    const currentDayOfWeek = now.getDay();
+
     let hasChanges = false;
 
     for (const schedule of schedules) {
-        if (schedule.status === 'PENDING' && schedule.scheduledTimestamp <= now) {
-            console.log(`[Scheduler] Memproses jadwal ID ${schedule.id} (${schedule.type})...`);
+        let isDue = false;
 
+        if (schedule.repeatType === 'ONCE') {
+            if (schedule.status === 'PENDING' && schedule.scheduledTimestamp && schedule.scheduledTimestamp <= nowTimestamp) {
+                isDue = true;
+            }
+        } else if (schedule.repeatType === 'DAILY') {
+            if (schedule.status === 'ACTIVE' && schedule.timeOfDay) {
+                if (schedule.lastTriggeredDate !== todayDateStr && currentHourStr >= schedule.timeOfDay) {
+                    isDue = true;
+                }
+            }
+        } else if (schedule.repeatType === 'CUSTOM_DAYS') {
+            if (schedule.status === 'ACTIVE' && schedule.timeOfDay && Array.isArray(schedule.daysOfWeek)) {
+                const days = schedule.daysOfWeek.map(d => parseInt(d, 10));
+                if (days.includes(currentDayOfWeek)) {
+                    if (schedule.lastTriggeredDate !== todayDateStr && currentHourStr >= schedule.timeOfDay) {
+                        isDue = true;
+                    }
+                }
+            }
+        }
+
+        if (isDue) {
+            console.log(`[Scheduler] Mengeksekusi jadwal ${schedule.id} (${schedule.repeatType})...`);
             try {
                 await postStatusToWhatsApp(schedule);
-                console.log(`[Scheduler] Status ID ${schedule.id} berhasil terkirim!`);
-                schedule.status = 'COMPLETED';
-                schedule.postedAt = Date.now();
+                console.log(`[Scheduler] Status ${schedule.id} berhasil terkirim!`);
+
+                if (schedule.repeatType === 'ONCE') {
+                    schedule.status = 'COMPLETED';
+                }
+                schedule.lastTriggeredDate = todayDateStr;
+                schedule.postedAt = nowTimestamp;
                 schedule.errorMessage = null;
                 hasChanges = true;
             } catch (err) {
-                console.error(`[Scheduler] Error mengirim status ID ${schedule.id}:`, err.message);
-                schedule.status = 'FAILED';
-                schedule.errorMessage = err.message || 'Gagal mengirim status ke WhatsApp';
+                console.error(`[Scheduler] Gagal kirim status ${schedule.id}:`, err.message);
+                if (schedule.repeatType === 'ONCE') {
+                    schedule.status = 'FAILED';
+                }
+                schedule.errorMessage = err.message || 'Gagal mengirim status';
                 hasChanges = true;
             }
         }
