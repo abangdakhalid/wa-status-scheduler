@@ -12,6 +12,14 @@ const {
     fetchLatestBaileysVersion
 } = require('@whiskeysockets/baileys');
 
+// Prevent crashes on network blips or unhandled promise rejections
+process.on('uncaughtException', (err) => {
+    console.error('[System] Uncaught Exception:', err.message || err);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('[System] Unhandled Rejection:', reason?.message || reason);
+});
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -88,7 +96,10 @@ async function startWhatsApp() {
             auth: state,
             logger: pino({ level: 'silent' }),
             printQRInTerminal: false,
-            browser: ['WA Status Scheduler', 'Chrome', '1.0.0']
+            browser: ['WA Status Scheduler', 'Chrome', '1.0.0'],
+            connectTimeoutMs: 60000,
+            defaultQueryTimeoutMs: 60000,
+            keepAliveIntervalMs: 30000
         });
 
         sock.ev.on('creds.update', saveCreds);
@@ -113,6 +124,10 @@ async function startWhatsApp() {
                 connectionStatus = 'disconnected';
                 qrCodeDataUrl = null;
                 connectedUser = null;
+
+                if (sock) {
+                    try { sock.ev.removeAllListeners(); } catch (e) {}
+                }
 
                 if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
                     console.log('[WA] Sesi logout/kadaluwarsa. Membersihkan autentikasi...');
