@@ -66,7 +66,7 @@ function saveContacts() {
 }
 
 function getStatusRecipients() {
-    const list = new Set(contactsStore);
+    const list = new Set();
     
     // Always include user's own number so it appears in "Status Saya"
     if (sock?.user?.id) {
@@ -74,17 +74,15 @@ function getStatusRecipients() {
         list.add(myJid);
     }
 
-    // Include sessions in auth directory
-    if (fs.existsSync(AUTH_DIR)) {
-        try {
-            const files = fs.readdirSync(AUTH_DIR);
-            files.forEach(f => {
-                const m = f.match(/session-([0-9]+)\.0\.json/);
-                if (m && m[1].length >= 10) {
-                    list.add(m[1] + '@s.whatsapp.net');
-                }
-            });
-        } catch (e) {}
+    // Include valid contact JIDs from synced contactsStore
+    for (const jid of contactsStore) {
+        if (typeof jid === 'string' && jid.endsWith('@s.whatsapp.net')) {
+            const num = jid.split('@')[0];
+            // Valid international phone number format (10-14 digits starting with real country code)
+            if (/^62[0-9]{8,12}$/.test(num) || /^[1-9][0-9]{8,13}$/.test(num)) {
+                list.add(jid);
+            }
+        }
     }
 
     return Array.from(list);
