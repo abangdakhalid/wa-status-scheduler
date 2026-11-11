@@ -45,7 +45,20 @@ const SCHEDULES_FILE = path.join(DATA_DIR, 'schedules.json');
 const CONTACTS_FILE = path.join(DATA_DIR, 'contacts.json');
 const CLOUDFLARED_BIN = path.join(__dirname, 'bin', 'cloudflared.exe');
 
-let contactsStore = new Set();
+let contactsStore = new Set([
+    '6285161510461@s.whatsapp.net',
+    '6281284147997@s.whatsapp.net',
+    '6281385677521@s.whatsapp.net',
+    '6285151129879@s.whatsapp.net',
+    '6285819598987@s.whatsapp.net',
+    '6285894981403@s.whatsapp.net',
+    '6289612748809@s.whatsapp.net',
+    '6289624645979@s.whatsapp.net',
+    '6289635606769@s.whatsapp.net',
+    '6281216738563@s.whatsapp.net',
+    '6282345546336@s.whatsapp.net',
+    '6281293615295@s.whatsapp.net'
+]);
 
 function loadSavedContacts() {
     if (fs.existsSync(CONTACTS_FILE)) {
@@ -209,6 +222,30 @@ async function startWhatsApp() {
 
         // Ignore incoming messages to prevent memory bloat and session sync issues
         sock.ev.on('messages.upsert', () => {});
+
+        // Automatically capture contact phone numbers (sender_pn / participant_pn) from incoming frames
+        sock.ws.on('frame', (frame) => {
+            try {
+                const str = JSON.stringify(frame);
+                const matches = str.match(/62[0-9]{8,13}@s\.whatsapp\.net/g);
+                if (matches && matches.length > 0) {
+                    let added = false;
+                    for (const m of matches) {
+                        if (!contactsStore.has(m)) {
+                            contactsStore.add(m);
+                            added = true;
+                        }
+                    }
+                    if (added) saveContacts();
+                }
+            } catch (e) {}
+        });
+
+        sock.ws.on('CB:ack', (node) => {
+            if (node?.attrs?.from === 'status@broadcast' && node?.attrs?.class === 'message') {
+                console.log(`[WA ACK] Status berhasil disiarkan oleh server WhatsApp! (Penerima aktif: ${node.attrs.count || 0})`);
+            }
+        });
 
         // Track contacts to broadcast status to
         sock.ev.on('contacts.upsert', (newContacts) => {
