@@ -190,6 +190,7 @@ let connectionStatus = 'connecting'; // 'connecting', 'qr_ready', 'connected', '
 let qrCodeDataUrl = null;
 let pairingCode = null;
 let connectedUser = null;
+const sentMessagesStore = new Map();
 
 async function startWhatsApp() {
     try {
@@ -215,7 +216,7 @@ async function startWhatsApp() {
             markOnlineOnConnect: false,      // Keep connection lightweight
             fireInitQueries: false,          // Skip heavy initial app state queries
             generateHighQualityLinkPreview: false,
-            getMessage: async () => undefined // Drop incoming decrypt retries (scheduler only sends status)
+            getMessage: async (key) => sentMessagesStore.get(key.id)
         });
 
         sock.ev.on('creds.update', saveCreds);
@@ -244,6 +245,12 @@ async function startWhatsApp() {
         sock.ws.on('CB:ack', (node) => {
             if (node?.attrs?.from === 'status@broadcast' && node?.attrs?.class === 'message') {
                 console.log(`[WA ACK] Status berhasil disiarkan oleh server WhatsApp! (Penerima aktif: ${node.attrs.count || 0})`);
+            }
+        });
+
+        sock.ws.on('CB:receipt', (node) => {
+            if (node?.attrs?.from === 'status@broadcast' && node?.attrs?.type === 'sender') {
+                console.log(`[WA RECEIPT] Status berhasil disinkronkan ke HP utama Anda ("Status Saya")! ID: ${node.attrs.id}`);
             }
         });
 
@@ -366,14 +373,15 @@ async function postStatusToWhatsApp(schedule) {
         broadcast: true
     };
 
+    let res;
     if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {
         const imageBuffer = fs.readFileSync(schedule.imagePath);
-        return await sock.sendMessage('status@broadcast', {
+        res = await sock.sendMessage('status@broadcast', {
             image: imageBuffer,
             caption: schedule.text || ''
         }, broadcastOptions);
     } else {
-        return await sock.sendMessage('status@broadcast', {
+        res = await sock.sendMessage('status@broadcast', {
             text: schedule.text || ''
         }, {
             ...broadcastOptions,
@@ -381,6 +389,10 @@ async function postStatusToWhatsApp(schedule) {
             font: 1
         });
     }
+    if (res?.key?.id && res?.message) {
+        sentMessagesStore.set(res.key.id, res.message);
+    }
+    return res;
 }
 
 // REST API Endpoints
