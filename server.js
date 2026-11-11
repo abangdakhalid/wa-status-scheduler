@@ -42,7 +42,53 @@ const DATA_DIR = path.join(__dirname, 'data');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const AUTH_DIR = path.join(__dirname, 'auth_info_baileys');
 const SCHEDULES_FILE = path.join(DATA_DIR, 'schedules.json');
+const CONTACTS_FILE = path.join(DATA_DIR, 'contacts.json');
 const CLOUDFLARED_BIN = path.join(__dirname, 'bin', 'cloudflared.exe');
+
+let contactsStore = new Set();
+
+function loadSavedContacts() {
+    if (fs.existsSync(CONTACTS_FILE)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(CONTACTS_FILE, 'utf8'));
+            if (Array.isArray(data)) {
+                data.forEach(jid => contactsStore.add(jid));
+            }
+        } catch (e) {}
+    }
+}
+loadSavedContacts();
+
+function saveContacts() {
+    try {
+        fs.writeFileSync(CONTACTS_FILE, JSON.stringify(Array.from(contactsStore), null, 2));
+    } catch (e) {}
+}
+
+function getStatusRecipients() {
+    const list = new Set(contactsStore);
+    
+    // Always include user's own number so it appears in "Status Saya"
+    if (sock?.user?.id) {
+        const myJid = sock.user.id.split(':')[0] + '@s.whatsapp.net';
+        list.add(myJid);
+    }
+
+    // Include sessions in auth directory
+    if (fs.existsSync(AUTH_DIR)) {
+        try {
+            const files = fs.readdirSync(AUTH_DIR);
+            files.forEach(f => {
+                const m = f.match(/session-([0-9]+)\.0\.json/);
+                if (m && m[1].length >= 10) {
+                    list.add(m[1] + '@s.whatsapp.net');
+                }
+            });
+        } catch (e) {}
+    }
+
+    return Array.from(list);
+}
 
 let cloudflareUrl = null;
 let tunnelProcess = null;
@@ -166,6 +212,43 @@ async function startWhatsApp() {
         // Ignore incoming messages to prevent memory bloat and session sync issues
         sock.ev.on('messages.upsert', () => {});
 
+        // Track contacts to broadcast status to
+        sock.ev.on('contacts.upsert', (newContacts) => {
+            for (const c of newContacts) {
+                if (c.id && c.id.endsWith('@s.whatsapp.net')) {
+                    contactsStore.add(c.id);
+                }
+            }
+            saveContacts();
+        });
+
+        sock.ev.on('contacts.update', (updatedContacts) => {
+            for (const c of updatedContacts) {
+                if (c.id && c.id.endsWith('@s.whatsapp.net')) {
+                    contactsStore.add(c.id);
+                }
+            }
+            saveContacts();
+        });
+
+        sock.ev.on('messaging-history.set', ({ contacts, chats }) => {
+            if (contacts) {
+                for (const c of contacts) {
+                    if (c.id && c.id.endsWith('@s.whatsapp.net')) {
+                        contactsStore.add(c.id);
+                    }
+                }
+            }
+            if (chats) {
+                for (const c of chats) {
+                    if (c.id && c.id.endsWith('@s.whatsapp.net')) {
+                        contactsStore.add(c.id);
+                    }
+                }
+            }
+            saveContacts();
+        });
+
         sock.ev.on('connection.update', async (update) => {
             const { connection, lastDisconnect, qr } = update;
 
@@ -240,20 +323,28 @@ async function postStatusToWhatsApp(schedule) {
         throw new Error('WhatsApp sedang menyambung ulang ke HP. Mohon coba klik Kirim Sekarang lagi dalam 5 detik.');
     }
 
+    const statusJidList = getStatusRecipients();
+    console.log(`[WA] Mengirim status broadcast ke ${statusJidList.length} penerima (termasuk nomor sendiri)...`);
+
+    const broadcastOptions = {
+        statusJidList: statusJidList,
+        broadcast: true
+    };
+
     if (schedule.type === 'IMAGE' && schedule.imagePath && fs.existsSync(schedule.imagePath)) {
         const imageBuffer = fs.readFileSync(schedule.imagePath);
         return await sock.sendMessage('status@broadcast', {
             image: imageBuffer,
             caption: schedule.text || ''
-        });
+        }, broadcastOptions);
     } else {
-        const statusPayload = {
+        return await sock.sendMessage('status@broadcast', {
             text: schedule.text || ''
-        };
-        if (schedule.backgroundColor) {
-            statusPayload.backgroundColor = schedule.backgroundColor;
-        }
-        return await sock.sendMessage('status@broadcast', statusPayload);
+        }, {
+            ...broadcastOptions,
+            backgroundColor: schedule.backgroundColor || '#075E54',
+            font: 1
+        });
     }
 }
 
