@@ -13,12 +13,20 @@ const {
     fetchLatestBaileysVersion
 } = require('@whiskeysockets/baileys');
 
-// Prevent crashes on network blips or unhandled promise rejections
+// Prevent crashes on network blips, Bad MAC session errors, or unhandled promise rejections
 process.on('uncaughtException', (err) => {
-    console.error('[System] Uncaught Exception:', err.message || err);
+    const msg = err?.message || String(err);
+    if (msg.includes('Bad MAC') || msg.includes('Failed to decrypt')) {
+        return; // Silently ignore incoming chat decryption mismatch (we only post status)
+    }
+    console.error('[System] Uncaught Exception:', msg);
 });
 process.on('unhandledRejection', (reason) => {
-    console.error('[System] Unhandled Rejection:', reason?.message || reason);
+    const msg = reason?.message || String(reason);
+    if (msg.includes('Bad MAC') || msg.includes('Failed to decrypt')) {
+        return;
+    }
+    console.error('[System] Unhandled Rejection:', msg);
 });
 
 const app = express();
@@ -145,10 +153,18 @@ async function startWhatsApp() {
             browser: ['WA Status Scheduler', 'Chrome', '1.0.0'],
             connectTimeoutMs: 60000,
             defaultQueryTimeoutMs: 60000,
-            keepAliveIntervalMs: 30000
+            keepAliveIntervalMs: 30000,
+            syncFullHistory: false,          // Never download full message history from phone
+            markOnlineOnConnect: false,      // Keep connection lightweight
+            fireInitQueries: false,          // Skip heavy initial app state queries
+            generateHighQualityLinkPreview: false,
+            getMessage: async () => undefined // Drop incoming decrypt retries (scheduler only sends status)
         });
 
         sock.ev.on('creds.update', saveCreds);
+
+        // Ignore incoming messages to prevent memory bloat and session sync issues
+        sock.ev.on('messages.upsert', () => {});
 
         sock.ev.on('connection.update', async (update) => {
             const { connection, lastDisconnect, qr } = update;

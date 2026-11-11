@@ -582,20 +582,59 @@ document.addEventListener('DOMContentLoaded', () => {
         schedulesGrid.innerHTML = filtered.map(item => {
             const isRecurring = item.repeatType === 'DAILY' || item.repeatType === 'CUSTOM_DAYS';
             
-            // Format Timing Description
+            // Format Timing Description & Next Run Target
             let timingText = '';
             let countdownHtml = '';
+            let nextTargetTime = null;
+            let nextRunLabel = '';
+
+            const now = new Date();
+            const todayDateStr = now.toLocaleDateString('en-CA');
 
             if (item.repeatType === 'DAILY') {
-                timingText = `🔁 <b>Setiap Hari</b> • Jam <b>${item.timeOfDay || '08:00'}</b>`;
+                timingText = `🔁 <b>Setiap Hari</b> • Jam <b>${item.timeOfDay || '08:00'} WIB</b>`;
+                if (item.status === 'ACTIVE' && item.timeOfDay) {
+                    const [h, m] = item.timeOfDay.split(':').map(Number);
+                    const targetToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+                    
+                    if (now.getTime() < targetToday.getTime() && item.lastTriggeredDate !== todayDateStr) {
+                        nextTargetTime = targetToday.getTime();
+                        nextRunLabel = 'Hari ini';
+                    } else {
+                        const targetTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, h, m, 0);
+                        nextTargetTime = targetTomorrow.getTime();
+                        nextRunLabel = 'Besok Pagi';
+                    }
+                    countdownHtml = `<span class="countdown-badge" data-time="${nextTargetTime}" data-label="${nextRunLabel}">⏳ Menghitung...</span>`;
+                }
                 if (item.lastTriggeredDate) {
-                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir: ${item.lastTriggeredDate})</span>`;
+                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir tayang: ${item.lastTriggeredDate})</span>`;
                 }
             } else if (item.repeatType === 'CUSTOM_DAYS') {
                 const daysList = (item.daysOfWeek || []).map(d => dayNames[d]).join(', ');
-                timingText = `🗓️ <b>${daysList || 'Hari Tertentu'}</b> • Jam <b>${item.timeOfDay || '08:00'}</b>`;
+                timingText = `🗓️ <b>${daysList || 'Hari Tertentu'}</b> • Jam <b>${item.timeOfDay || '08:00'} WIB</b>`;
+                
+                if (item.status === 'ACTIVE' && item.timeOfDay && Array.isArray(item.daysOfWeek) && item.daysOfWeek.length > 0) {
+                    const [h, m] = item.timeOfDay.split(':').map(Number);
+                    // Find next matching day
+                    for (let dayOffset = 0; dayOffset <= 7; dayOffset++) {
+                        const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset, h, m, 0);
+                        const testDay = testDate.getDay();
+                        if (item.daysOfWeek.includes(testDay)) {
+                            if (dayOffset === 0 && (now.getTime() >= testDate.getTime() || item.lastTriggeredDate === todayDateStr)) {
+                                continue;
+                            }
+                            nextTargetTime = testDate.getTime();
+                            nextRunLabel = dayOffset === 0 ? 'Hari ini' : (dayOffset === 1 ? 'Besok' : dayNames[testDay]);
+                            break;
+                        }
+                    }
+                    if (nextTargetTime) {
+                        countdownHtml = `<span class="countdown-badge" data-time="${nextTargetTime}" data-label="${nextRunLabel}">⏳ Menghitung...</span>`;
+                    }
+                }
                 if (item.lastTriggeredDate) {
-                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir: ${item.lastTriggeredDate})</span>`;
+                    timingText += ` <span style="font-size: 11px; color: var(--text-muted);">(Terakhir tayang: ${item.lastTriggeredDate})</span>`;
                 }
             } else {
                 const dateObj = new Date(item.scheduledTimestamp);
@@ -606,10 +645,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-                timingText = `📅 <b>Sekali Saja:</b> ${dateStr}`;
+                timingText = `📅 <b>Sekali Saja:</b> ${dateStr} WIB`;
 
                 if (item.status === 'PENDING') {
-                    countdownHtml = `<span class="countdown-badge" data-time="${item.scheduledTimestamp}">⏳ Menghitung...</span>`;
+                    countdownHtml = `<span class="countdown-badge" data-time="${item.scheduledTimestamp}" data-label="Tayang">⏳ Menghitung...</span>`;
                 }
             }
 

@@ -273,6 +273,7 @@
                     <div id="sectionOnce" class="timing-sub-section">
                         <label class="field-label">Pintasan Cepat (Sekali Saja):</label>
                         <div class="quick-presets">
+                            <button type="button" class="preset-pill" data-minutes="2">⚡ +2 Menit (Tes Cepat)</button>
                             <button type="button" class="preset-pill" data-minutes="5">+5 Menit</button>
                             <button type="button" class="preset-pill" data-minutes="15">+15 Menit</button>
                             <button type="button" class="preset-pill" data-minutes="60">+1 Jam</button>
@@ -291,6 +292,9 @@
                             <label class="field-label" for="timeDaily">Pilih Jam Tayang Setiap Hari:</label>
                             <input type="time" id="timeDaily" class="input-modern time-field" value="08:00">
                             <span class="custom-label">Status ini akan otomatis diunggah setiap hari pada jam di atas.</span>
+                            <div style="margin-top: 6px; font-size: 11.5px; color: var(--brand-primary); font-weight: 500;">
+                                💡 Format 24 Jam: 08:00 = 8 Pagi | 13:00 = 1 Siang | 20:00 = 8 Malam | 22:00 = 10 Malam
+                            </div>
                         </div>
                     </div>
 
@@ -310,6 +314,9 @@
                             <label class="field-label" for="timeCustom">Pilih Jam Tayang pada Hari Tersebut:</label>
                             <input type="time" id="timeCustom" class="input-modern time-field" value="08:00">
                             <span class="custom-label">Status ini akan diunggah otomatis setiap minggu pada hari &amp; jam di atas.</span>
+                            <div style="margin-top: 6px; font-size: 11.5px; color: var(--brand-primary); font-weight: 500;">
+                                💡 Format 24 Jam: 08:00 = 8 Pagi | 13:00 = 1 Siang | 20:00 = 8 Malam | 22:00 = 10 Malam
+                            </div>
                         </div>
                     </div>
 
@@ -396,6 +403,17 @@
                     <button class="filter-chip" data-filter="ACTIVE">Aktif (Rutin)</button>
                     <button class="filter-chip" data-filter="COMPLETED">Terkirim</button>
                     <button class="filter-chip" data-filter="FAILED">Gagal</button>
+                </div>
+            </div>
+
+            <!-- Mesin Status & Jam Real-Time -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 168, 132, 0.08); border: 1px solid rgba(0, 168, 132, 0.25); border-radius: 12px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="pulsing-dot" style="background: var(--brand-primary); width: 8px; height: 8px;"></span>
+                    <span><b>Mesin Jadwal Otomatis:</b> <span style="color: var(--brand-primary); font-weight: 600;">AKTIF &amp; BERJALAN</span> (Pengecekan setiap 15 detik)</span>
+                </div>
+                <div style="color: var(--text-muted); font-size: 12.5px;">
+                    🕒 Waktu Server Sekarang: <b id="liveClockDisplay" style="color: var(--text-main); font-family: monospace; font-size: 13px;">--:--:-- WIB</b>
                 </div>
             </div>
 
