@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const textContent = document.getElementById('textContent');
     const charCounter = document.getElementById('charCounter');
     const btnSubmit = document.getElementById('btnSubmit');
+    const btnInstantSend = document.getElementById('btnInstantSend');
 
     // Repeat Frequency Elements
     const repeatCards = document.querySelectorAll('.repeat-card');
@@ -489,8 +490,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                 </svg>
-                <span>Simpan &amp; Jadwalkan Status</span>
+                <span>Simpan &amp; Jadwalkan Waktu</span>
             `;
+        }
+    });
+
+    // --- Instant Send Button (Send to WhatsApp without waiting for schedule) ---
+    btnInstantSend?.addEventListener('click', async () => {
+        const selectedType = document.querySelector('input[name="statusType"]:checked')?.value || 'TEXT';
+        const textVal = textContent.value.trim();
+
+        if (selectedType === 'IMAGE' && (!fileImage.files || !fileImage.files[0])) {
+            showToast('Silakan pilih berkas gambar yang ingin diunggah!', 'error');
+            return;
+        }
+
+        if (selectedType === 'TEXT' && !textVal) {
+            showToast('Silakan ketik teks status Anda terlebih dahulu!', 'error');
+            textContent.focus();
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('type', selectedType);
+        formData.append('text', textVal);
+        formData.append('backgroundColor', selectedColor);
+
+        if (selectedType === 'IMAGE' && fileImage.files[0]) {
+            formData.append('image', fileImage.files[0]);
+        }
+
+        const originalHtml = btnInstantSend.innerHTML;
+        btnInstantSend.disabled = true;
+        btnInstantSend.innerHTML = `<span>⚡ Mengirim ke WhatsApp...</span>`;
+
+        try {
+            const res = await fetch('/api/send-instant', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showToast('✓ Berhasil! Status langsung terkirim ke WhatsApp Anda.', 'success');
+                textContent.value = '';
+                if (charCounter) charCounter.textContent = '0 karakter';
+                mockupTextContent.textContent = 'Tulis pesan status Anda di formulir...';
+                mockupCaptionBox.style.display = 'none';
+
+                if (selectedType === 'IMAGE') {
+                    fileImage.value = '';
+                    thumbImg.src = '';
+                    thumbWrapper.style.display = 'none';
+                    dropPrompt.style.display = 'block';
+                    mockupImageBody.src = '';
+                    mockupImageBody.style.display = 'none';
+                }
+            } else {
+                showToast(data.error || 'Gagal mengirim status.', 'error');
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan atau server tidak merespons.', 'error');
+        } finally {
+            btnInstantSend.disabled = false;
+            btnInstantSend.innerHTML = originalHtml;
         }
     });
 

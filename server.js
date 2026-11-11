@@ -367,6 +367,37 @@ app.get('/api/tunnel-info', (req, res) => {
     });
 });
 
+// 1c. Send Instant Status (No schedule needed, post immediately)
+app.post('/api/send-instant', upload.single('image'), async (req, res) => {
+    try {
+        const { type, text, backgroundColor } = req.body;
+        const statusType = type || (req.file ? 'IMAGE' : 'TEXT');
+
+        if (statusType === 'IMAGE' && !req.file) {
+            return res.status(400).json({ error: 'Silakan pilih gambar terlebih dahulu!' });
+        }
+        if (statusType === 'TEXT' && (!text || !text.trim())) {
+            return res.status(400).json({ error: 'Teks status tidak boleh kosong!' });
+        }
+
+        const instantSchedule = {
+            id: 'instant-' + Date.now(),
+            type: statusType,
+            text: text ? text.trim() : '',
+            backgroundColor: backgroundColor || '#075E54',
+            imagePath: req.file ? req.file.path : null
+        };
+
+        await postStatusToWhatsApp(instantSchedule);
+        console.log('[Instant] Status berhasil dikirim langsung ke WhatsApp!');
+
+        res.json({ success: true, message: 'Status berhasil dikirim langsung ke WhatsApp!' });
+    } catch (err) {
+        console.error('[Instant] Gagal kirim langsung:', err);
+        res.status(500).json({ error: err.message || 'Gagal mengirim status langsung' });
+    }
+});
+
 // 2. Refresh QR Code (Clears state & forces fresh QR immediately)
 app.post('/api/refresh-qr', async (req, res) => {
     try {

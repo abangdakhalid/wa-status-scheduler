@@ -320,14 +320,20 @@
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" id="btnSubmit" class="btn btn-emerald-glow btn-block" style="margin-top: 24px;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                        <span>Simpan &amp; Jadwalkan Status</span>
-                    </button>
+                    <!-- Action Buttons (Instant Test vs Schedule) -->
+                    <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+                        <button type="button" id="btnInstantSend" class="btn btn-secondary-soft" style="flex: 1; min-width: 200px; padding: 13px 18px; border: 1.5px solid rgba(0, 168, 132, 0.45); color: #25D366; font-weight: 700; background: rgba(0, 168, 132, 0.1);">
+                            <span style="font-size: 18px;">⚡</span>
+                            <span>Kirim Langsung Sekarang (Tanpa Jadwal)</span>
+                        </button>
+                        <button type="submit" id="btnSubmit" class="btn btn-emerald-glow" style="flex: 1; min-width: 200px; padding: 13px 18px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            <span>Simpan &amp; Jadwalkan Waktu</span>
+                        </button>
+                    </div>
                 </form>
             </div>
 
