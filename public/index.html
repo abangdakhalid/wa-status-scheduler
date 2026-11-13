@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00A884">
     <title>WhatsApp Status Scheduler Pro</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
@@ -30,6 +34,16 @@
             </div>
 
             <div class="header-right-group" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <a href="/WA-Status-Scheduler-Pro.apk" download="WA-Status-Scheduler-Pro.apk" class="connection-pill" style="background: rgba(0, 168, 132, 0.2); border: 1px solid rgba(0, 168, 132, 0.55); color: #25D366; text-decoration: none; font-weight: 700; font-size: 12px; cursor: pointer;">
+                    <span>📲</span>
+                    <span>Download APK Android</span>
+                </a>
+
+                <button type="button" id="btnInstallPwa" class="connection-pill" style="display: none; background: rgba(59, 130, 246, 0.18); border: 1px solid rgba(59, 130, 246, 0.5); color: #60A5FA; font-weight: 700; font-size: 12px; cursor: pointer;">
+                    <span>⚡</span>
+                    <span>Install Aplikasi Web (PWA)</span>
+                </button>
+
                 <div id="cloudflareBadge" class="connection-pill" style="display: none; background: rgba(246, 130, 31, 0.15); border: 1px solid rgba(246, 130, 31, 0.45); color: #F6821F;">
                     <span style="font-size: 14px;">☁️</span>
                     <a id="cloudflareLink" href="#" target="_blank" style="color: #F6821F; text-decoration: underline; font-weight: 600; font-size: 12px;">Cloudflare Online</a>
@@ -428,6 +442,79 @@
                     <div class="modern-spinner"></div>
                     <span>Memuat daftar jadwal status...</span>
                 </div>
+            </div>
+        </section>
+
+        <!-- 4. Reseller Center: APK Download & License Key Generator -->
+        <section class="glass-card list-card" style="margin-top: 28px; border: 1.5px solid rgba(0, 168, 132, 0.35);">
+            <div class="card-title-row">
+                <div class="title-with-icon">
+                    <span class="step-num" style="background: linear-gradient(135deg, #F59E0B, #D97706);">💼</span>
+                    <div>
+                        <h2>Panel Reseller &amp; Aplikasi Mandiri (Siap Jual Kembali)</h2>
+                        <p class="section-desc">Unduh file APK Android mandiri untuk pembeli &amp; buat Kode Lisensi (7 Hari, 30 Hari, 1 Tahun, Lifetime)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 12px;">
+                <!-- Box A: Download APK Mandiri -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 20px;">
+                    <h3 style="font-size: 16px; margin-bottom: 8px; color: #25D366;">📱 1. File APK Android Mandiri (Standalone)</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px;">
+                        File APK ini berjalan <b>100% mandiri di HP masing-masing pembeli</b> tanpa bergantung pada laptop/server Anda. Saat pembeli menginstal APK ini, aplikasi akan meminta <b>Kode Lisensi</b> yang hanya bisa dibuat oleh Anda.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="/WA-Status-Scheduler-Pro.apk" download="WA-Status-Scheduler-Pro.apk" class="btn btn-emerald-glow" style="text-decoration: none; justify-content: center; padding: 13px 18px; font-weight: 700;">
+                            <span>📥 Download File APK Android (5.5 MB)</span>
+                        </a>
+                        <div style="font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.25); padding: 10px 12px; border-radius: 10px; line-height: 1.5;">
+                            💡 <b>Info Penjual:</b> Di dalam aplikasi APK juga terdapat tombol <b>"💼 Panel Reseller"</b> untuk membuat kode lisensi langsung dari HP Anda menggunakan PIN Rahasia Penjual: <code style="color: #FBBF24; font-weight: 700;">888888</code>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box B: Generator Kode Lisensi -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 20px;">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: #FBBF24;">🔑 2. Generator Kode Lisensi Pembeli</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div>
+                            <label class="field-label" style="font-size: 12.5px;">Nama Pembeli / Catatan (Opsional):</label>
+                            <input type="text" id="resellerBuyerName" class="input-modern" placeholder="Contoh: Budi Santoso - Paket 1 Bulan" style="width: 100%; margin-top: 4px;">
+                        </div>
+                        <div>
+                            <label class="field-label" style="font-size: 12.5px;">Pilih Durasi Lisensi:</label>
+                            <select id="resellerPlanSelect" class="input-modern" style="width: 100%; margin-top: 4px; background: #111B21; color: #fff;">
+                                <option value="7D">Trial 7 Hari (7D)</option>
+                                <option value="30D" selected>Pro 30 Hari / 1 Bulan (30D)</option>
+                                <option value="1Y">Pro 1 Tahun / 365 Hari (1Y)</option>
+                                <option value="LIFE">Pro Lifetime / Selamanya (LIFE)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="field-label" style="font-size: 12.5px;">ID Perangkat Pembeli (Opsional — Kunci ke 1 HP):</label>
+                            <input type="text" id="resellerDeviceId" class="input-modern" placeholder="Contoh: WA-8F3A1B (Kosongkan jika untuk Semua HP)" style="width: 100%; margin-top: 4px; text-transform: uppercase;">
+                        </div>
+                        <button type="button" id="btnGenerateLicense" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; font-weight: 700;">
+                            <span>🔑 Buat Kode Lisensi Sekarang</span>
+                        </button>
+
+                        <!-- Generated Result Box -->
+                        <div id="generatedLicenseBox" style="display: none; background: rgba(0, 168, 132, 0.12); border: 1.5px dashed rgba(0, 168, 132, 0.55); border-radius: 12px; padding: 14px; margin-top: 4px;">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Kode Lisensi Siap Kirim:</div>
+                            <div id="generatedKeyDisplay" style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: #25D366; word-break: break-all; margin-bottom: 10px;">WASP-30D-20261211-ALL-XXXXXX</div>
+                            <button type="button" id="btnCopyLicenseMsg" class="btn btn-secondary-soft" style="width: 100%; justify-content: center; font-size: 12.5px; padding: 8px 12px;">
+                                📋 Salin Kode &amp; Template Pesan Pembeli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- License History List -->
+            <div style="margin-top: 18px;">
+                <h4 style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px;">📋 Riwayat Kode Lisensi yang Dibuat:</h4>
+                <div id="licenseHistoryList" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;"></div>
             </div>
         </section>
 

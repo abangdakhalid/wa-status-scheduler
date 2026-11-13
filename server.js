@@ -665,6 +665,80 @@ app.delete('/api/schedules/:id', (req, res) => {
     res.json({ success: true, message: 'Jadwal berhasil dihapus' });
 });
 
+// 9. Reseller License Key Generator (100% Compatible with Android APK LicenseManager.kt)
+const crypto = require('crypto');
+const LICENSES_FILE = path.join(DATA_DIR, 'licenses.json');
+if (!fs.existsSync(LICENSES_FILE)) {
+    fs.writeFileSync(LICENSES_FILE, JSON.stringify([], null, 2));
+}
+
+function computeApkLicenseSignature(planCode, expiryStr, targetDevice) {
+    const payload = `WASP_RESELLER_2026|${planCode.toUpperCase()}|${expiryStr}|${targetDevice.toUpperCase()}`;
+    return crypto.createHash('sha256').update(payload, 'utf8').digest('hex').toUpperCase().slice(0, 6);
+}
+
+app.post('/api/reseller/generate-key', (req, res) => {
+    try {
+        const { planCode = '30D', buyerDeviceId = '', buyerName = '' } = req.body || {};
+        const cleanPlan = String(planCode).toUpperCase().trim();
+        const cleanDevice = String(buyerDeviceId).toUpperCase().trim().replace(/^WA-?/, '') || 'ALL';
+
+        const daysMap = { '7D': 7, '30D': 30, '1Y': 365, 'LIFE': 36500 };
+        const titleMap = {
+            '7D': 'Trial 7 Hari',
+            '30D': 'Pro 30 Hari (1 Bulan)',
+            '1Y': 'Pro 1 Tahun (365 Hari)',
+            'LIFE': 'Pro Lifetime (Selamanya)'
+        };
+
+        const days = daysMap[cleanPlan] || 30;
+        const planTitle = titleMap[cleanPlan] || `Pro (${cleanPlan})`;
+
+        let expiryStr = '20991231';
+        let expiryDisplay = 'Selamanya (Lifetime)';
+        if (cleanPlan !== 'LIFE') {
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            expiryStr = `${yyyy}${mm}${dd}`;
+            expiryDisplay = `${dd}/${mm}/${yyyy}`;
+        }
+
+        const sig = computeApkLicenseSignature(cleanPlan, expiryStr, cleanDevice);
+        const licenseKey = `WASP-${cleanPlan}-${expiryStr}-${cleanDevice}-${sig}`;
+
+        let history = [];
+        try { history = JSON.parse(fs.readFileSync(LICENSES_FILE, 'utf8')); } catch (e) {}
+        const record = {
+            id: Date.now().toString(),
+            licenseKey,
+            planCode: cleanPlan,
+            planTitle,
+            buyerName: buyerName.trim() || 'Pembeli Umum',
+            targetDevice: cleanDevice === 'ALL' ? 'Universal (Semua HP)' : `WA-${cleanDevice}`,
+            expiryDisplay,
+            createdAt: new Date().toLocaleString('id-ID')
+        };
+        history.unshift(record);
+        fs.writeFileSync(LICENSES_FILE, JSON.stringify(history.slice(0, 100), null, 2));
+
+        res.json({ success: true, record });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/reseller/licenses', (req, res) => {
+    try {
+        const history = JSON.parse(fs.readFileSync(LICENSES_FILE, 'utf8'));
+        res.json(history);
+    } catch (e) {
+        res.json([]);
+    }
+});
+
 // Scheduler Engine: Runs every 15 seconds to process due schedules
 setInterval(async () => {
     const schedules = getSchedules();

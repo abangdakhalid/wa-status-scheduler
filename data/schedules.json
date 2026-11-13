@@ -11,9 +11,43 @@
     "daysOfWeek": [],
     "scheduledTimestamp": null,
     "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-11",
+    "lastTriggeredDate": "2026-11-13",
     "errorMessage": null,
     "createdAt": 1794280127111,
-    "postedAt": 1794380594957
+    "postedAt": 1794539406957
+  },
+  {
+    "id": "1794455499475",
+    "type": "TEXT",
+    "text": "Capcut Pro",
+    "backgroundColor": "#C0392B",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "DAILY",
+    "timeOfDay": "12:01",
+    "daysOfWeek": [],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": "2026-11-13",
+    "errorMessage": null,
+    "createdAt": 1794455499475,
+    "postedAt": 1794552751226
+  },
+  {
+    "id": "1794457523587",
+    "type": "TEXT",
+    "text": "NETFLIX MURAH BERKUALITAS 4K",
+    "backgroundColor": "#D35400",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "DAILY",
+    "timeOfDay": "11:27",
+    "daysOfWeek": [],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": "2026-11-13",
+    "errorMessage": null,
+    "createdAt": 1794457523587,
+    "postedAt": 1794552751226
   }
 ]

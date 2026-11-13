@@ -1,0 +1,18 @@
+{
+  "name": "WA Status Scheduler Pro",
+  "short_name": "WA Status Pro",
+  "description": "Aplikasi Penjadwal Status WhatsApp Otomatis 24/7 + Panel Reseller",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B141A",
+  "theme_color": "#00A884",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

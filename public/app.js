@@ -880,4 +880,114 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkConnection, 2500);
     setInterval(loadSchedules, 8000);
     setInterval(checkTunnelInfo, 5000);
+
+    // --- PWA Service Worker & Install Button ---
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    let deferredPwaPrompt = null;
+    const btnInstallPwa = document.getElementById('btnInstallPwa');
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPwaPrompt = e;
+        if (btnInstallPwa) btnInstallPwa.style.display = 'inline-flex';
+    });
+
+    btnInstallPwa?.addEventListener('click', async () => {
+        if (!deferredPwaPrompt) return;
+        deferredPwaPrompt.prompt();
+        const { outcome } = await deferredPwaPrompt.userChoice;
+        if (outcome === 'accepted') {
+            btnInstallPwa.style.display = 'none';
+        }
+        deferredPwaPrompt = null;
+    });
+
+    // --- Reseller License Key Generator ---
+    const resellerBuyerName = document.getElementById('resellerBuyerName');
+    const resellerPlanSelect = document.getElementById('resellerPlanSelect');
+    const resellerDeviceId = document.getElementById('resellerDeviceId');
+    const btnGenerateLicense = document.getElementById('btnGenerateLicense');
+    const generatedLicenseBox = document.getElementById('generatedLicenseBox');
+    const generatedKeyDisplay = document.getElementById('generatedKeyDisplay');
+    const btnCopyLicenseMsg = document.getElementById('btnCopyLicenseMsg');
+    const licenseHistoryList = document.getElementById('licenseHistoryList');
+    let latestLicenseRecord = null;
+
+    async function loadLicenseHistory() {
+        if (!licenseHistoryList) return;
+        try {
+            const res = await fetch('/api/reseller/licenses');
+            const list = await res.json();
+            if (!Array.isArray(list) || list.length === 0) {
+                licenseHistoryList.innerHTML = `<div style="font-size: 12.5px; color: var(--text-muted); padding: 8px;">Belum ada kode lisensi yang dibuat.</div>`;
+                return;
+            }
+            licenseHistoryList.innerHTML = list.slice(0, 15).map(item => `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; font-size: 12.5px; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <b style="color: #25D366; font-family: 'JetBrains Mono', monospace;">${escapeHtml(item.licenseKey)}</b>
+                        <div style="color: var(--text-muted); font-size: 11.5px; margin-top: 2px;">
+                            👤 ${escapeHtml(item.buyerName)} • 📦 ${escapeHtml(item.planTitle)} • 📱 ${escapeHtml(item.targetDevice)} • ⏳ Aktif s/d: ${escapeHtml(item.expiryDisplay)}
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary-soft" style="font-size: 11.5px; padding: 5px 10px;" onclick="navigator.clipboard.writeText('${item.licenseKey}'); alert('Kode disalin: ${item.licenseKey}');">
+                        📋 Salin Kode
+                    </button>
+                </div>
+            `).join('');
+        } catch (e) {}
+    }
+
+    btnGenerateLicense?.addEventListener('click', async () => {
+        const planCode = resellerPlanSelect?.value || '30D';
+        const buyerDeviceId = resellerDeviceId?.value || '';
+        const buyerName = resellerBuyerName?.value || '';
+
+        btnGenerateLicense.disabled = true;
+        try {
+            const res = await fetch('/api/reseller/generate-key', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ planCode, buyerDeviceId, buyerName })
+            });
+            const data = await res.json();
+            if (data.success && data.record) {
+                latestLicenseRecord = data.record;
+                generatedKeyDisplay.textContent = data.record.licenseKey;
+                generatedLicenseBox.style.display = 'block';
+                navigator.clipboard.writeText(data.record.licenseKey).catch(() => {});
+                showToast(`Kode Lisensi berhasil dibuat & disalin: ${data.record.licenseKey}`, 'success');
+                loadLicenseHistory();
+            } else {
+                showToast(data.error || 'Gagal membuat kode lisensi', 'error');
+            }
+        } catch (e) {
+            showToast('Gagal menghubungi server', 'error');
+        } finally {
+            btnGenerateLicense.disabled = false;
+        }
+    });
+
+    btnCopyLicenseMsg?.addEventListener('click', () => {
+        if (!latestLicenseRecord) return;
+        const msg = `Terima kasih telah membeli *WA Status Scheduler Pro*! 🚀\n\n` +
+            `📦 Paket: *${latestLicenseRecord.planTitle}*\n` +
+            `📱 Perangkat: *${latestLicenseRecord.targetDevice}*\n` +
+            `⏳ Berlaku s/d: *${latestLicenseRecord.expiryDisplay}*\n\n` +
+            `🔑 *KODE AKTIVASI LISENSI:*\n` +
+            `${latestLicenseRecord.licenseKey}\n\n` +
+            `Cara Aktivasi:\n` +
+            `1. Instal & buka aplikasi *WA Status Scheduler Pro* di HP Android Anda.\n` +
+            `2. Klik tombol *Aktivasi Lisensi*.\n` +
+            `3. Tempelkan Kode Aktivasi di atas lalu klik *Aktivasi*.`;
+        navigator.clipboard.writeText(msg).then(() => {
+            showToast('Template pesan + Kode Lisensi berhasil disalin! Siap ditempel ke WhatsApp pembeli.', 'success');
+        }).catch(() => {
+            showToast(`Kode: ${latestLicenseRecord.licenseKey}`, 'info');
+        });
+    });
+
+    loadLicenseHistory();
 });

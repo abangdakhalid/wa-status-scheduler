@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1794382577511",
+    "licenseKey": "WASP-LIFE-20991231-ALL-51E3A3",
+    "planCode": "LIFE",
+    "planTitle": "Pro Lifetime (Selamanya)",
+    "buyerName": "Lisensi Lifetime Penjual",
+    "targetDevice": "Universal (Semua HP)",
+    "expiryDisplay": "Selamanya (Lifetime)",
+    "createdAt": "11/11/2026, 14.36.17"
+  },
+  {
+    "id": "1794382577498",
+    "licenseKey": "WASP-30D-20261211-ALL-485CE5",
+    "planCode": "30D",
+    "planTitle": "Pro 30 Hari (1 Bulan)",
+    "buyerName": "Contoh Pembeli 30 Hari",
+    "targetDevice": "Universal (Semua HP)",
+    "expiryDisplay": "11/12/2026",
+    "createdAt": "11/11/2026, 14.36.17"
+  }
+]
