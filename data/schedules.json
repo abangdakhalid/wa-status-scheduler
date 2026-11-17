@@ -2,52 +2,289 @@
   {
     "id": "1794280127111",
     "type": "TEXT",
-    "text": "Getcontact Promo\r\n\r\n10k aja",
+    "text": "Getcontact Premium Promo\n\n10k aja! Cek siapa yang simpan nomor & kepoin tag kamu sekarang 🔍",
     "backgroundColor": "#075E54",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "DAILY",
-    "timeOfDay": "10:10",
+    "timeOfDay": "06:00",
     "daysOfWeek": [],
     "scheduledTimestamp": null,
     "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-13",
+    "lastTriggeredDate": "2026-11-17",
     "errorMessage": null,
     "createdAt": 1794280127111,
-    "postedAt": 1794539406957
-  },
-  {
-    "id": "1794455499475",
-    "type": "TEXT",
-    "text": "Capcut Pro",
-    "backgroundColor": "#C0392B",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "DAILY",
-    "timeOfDay": "12:01",
-    "daysOfWeek": [],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-13",
-    "errorMessage": null,
-    "createdAt": 1794455499475,
-    "postedAt": 1794552751226
+    "postedAt": 1794929007132
   },
   {
     "id": "1794457523587",
     "type": "TEXT",
-    "text": "NETFLIX MURAH BERKUALITAS 4K",
-    "backgroundColor": "#D35400",
+    "text": "NETFLIX PREMIUM MURAH BERKUALITAS 4K UHD!\n\nAnti on-hold, garansi full, nonton film & series favorit sepuasnya 🍿🎬",
+    "backgroundColor": "#C0392B",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "DAILY",
-    "timeOfDay": "11:27",
+    "timeOfDay": "06:01",
     "daysOfWeek": [],
     "scheduledTimestamp": null,
     "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-13",
+    "lastTriggeredDate": "2026-11-17",
     "errorMessage": null,
     "createdAt": 1794457523587,
-    "postedAt": 1794552751226
+    "postedAt": 1794929007132
+  },
+  {
+    "id": "sch_senin_ai",
+    "type": "TEXT",
+    "text": "🔥 CHATGPT PLUS & GEMINI ADVANCED AI\n\nBantu skripsi, kerjaan kantor, coding & riset lebih cepat dan cerdas. Ready stok resmi! 🤖✨",
+    "backgroundColor": "#264653",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      1
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004353
+  },
+  {
+    "id": "sch_senin_gtc",
+    "type": "TEXT",
+    "text": "JASA GTC / CEK TAG GETCONTACT (Rp5.000) & UNBLOCK IMEI!\n\nProses cepat, aman & terpercaya. Chat admin langsung ya! 📲",
+    "backgroundColor": "#075E54",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      1
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004354
+  },
+  {
+    "id": "sch_selasa_canva",
+    "type": "TEXT",
+    "text": "🔥 CANVA PRO AKTIF RESMI\n\nDesain presentasi, poster, feed IG tanpa watermark. Jutaan template pro bebas pakai! 🎨",
+    "backgroundColor": "#6A4C93",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      2
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": "2026-11-17",
+    "errorMessage": null,
+    "createdAt": 1794929004355,
+    "postedAt": 1794929007132
+  },
+  {
+    "id": "sch_selasa_capcut",
+    "type": "TEXT",
+    "text": "🔥 CAPCUT PRO & ALIGHT MOTION\n\nVideo editing tanpa watermark, template pro terbuka, preset XML lancar. Murah meriah! ✂️🎬",
+    "backgroundColor": "#1B263B",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      2
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": "2026-11-17",
+    "errorMessage": null,
+    "createdAt": 1794929004356,
+    "postedAt": 1794929007132
+  },
+  {
+    "id": "sch_rabu_vidio",
+    "type": "TEXT",
+    "text": "🔥 VIDIO PLATINUM & EPL (Liga Inggris)!\n\nNonton bola BRI Liga 1, EPL, film box office & series lokal lancar no lag ⚽🏆",
+    "backgroundColor": "#C0392B",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      3
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004357
+  },
+  {
+    "id": "sch_rabu_viu",
+    "type": "TEXT",
+    "text": "🔥 VIU PREMIUM & DISNEY+ HOTSTAR\n\nNonton Drama Korea terlengkap sub Indo & film Marvel Disney no iklan sepuasnya! 🍿💖",
+    "backgroundColor": "#D35400",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      3
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004358
+  },
+  {
+    "id": "sch_kamis_stream",
+    "type": "TEXT",
+    "text": "PRIME VIDEO, HBO GO & WETV VIP!\n\nSerial The Boys, House of the Dragon & Drama China terupdate tanpa batas VIP 🎬✨",
+    "backgroundColor": "#1B263B",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      4
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004359
+  },
+  {
+    "id": "sch_kamis_anime",
+    "type": "TEXT",
+    "text": "BSTATION PREMIUM, iQIYI & WIBUKU!\n\nNonton anime 4K HD terlengkap no delay & drama Asia subtitle Indonesia. Order yuk! ⛩️🔥",
+    "backgroundColor": "#6A4C93",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      4
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004360
+  },
+  {
+    "id": "sch_jumat_musik",
+    "type": "TEXT",
+    "text": "SPOTIFY PREMIUM & APPLE MUSIC\n\nDengerin lagu bebas iklan, download offline, kualitas lossless audio jernih maksimal 🎧🎵",
+    "backgroundColor": "#075E54",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      5
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004361
+  },
+  {
+    "id": "sch_jumat_edukasi",
+    "type": "TEXT",
+    "text": "DUOLINGO SUPER, WATTPAD PREMIUM & FIZZO\n\nBelajar bahasa tanpa batas nyawa & baca novel cerita seru tanpa lock bab! 🦉📚",
+    "backgroundColor": "#264653",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      5
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004362
+  },
+  {
+    "id": "sch_sabtu_kamera",
+    "type": "TEXT",
+    "text": "DAZZ CAM PRO, WINK 4K & VSCO X FULL PRESET!\n\nBikin konten foto/video aesthetic vintage analog & video jernih glowing instan 📸🎞️",
+    "backgroundColor": "#D35400",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      6
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004363
+  },
+  {
+    "id": "sch_sabtu_editing",
+    "type": "TEXT",
+    "text": "PICSART GOLD, LIGHTROOM & INSHOT PRO!\n\nHapus background instan, preset tone kece & edit video praktis dari HP. Ready stok ya! 🎨📲",
+    "backgroundColor": "#6A4C93",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      6
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004364
+  },
+  {
+    "id": "sch_minggu_utilitas",
+    "type": "TEXT",
+    "text": "ZOOM PRO, CAMSCANNER & UPGRADE iCLOUD!\n\nMeeting tanpa batas 40 menit, scan dokumen jernih no watermark & memori HP lega 💼📄☁️",
+    "backgroundColor": "#264653",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:02",
+    "daysOfWeek": [
+      0
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004365
+  },
+  {
+    "id": "sch_minggu_bisnis",
+    "type": "TEXT",
+    "text": "DAFTAR AGEN PULSA / KUOTA TERMURAH + DISCORD NITRO!\n\nBuka peluang cuan sampingan jualan pulsa atau upgrade akun Discord kamu. Minat chat admin! 💰🚀",
+    "backgroundColor": "#C0392B",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "CUSTOM_DAYS",
+    "timeOfDay": "06:03",
+    "daysOfWeek": [
+      0
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794929004366
   }
 ]
