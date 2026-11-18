@@ -7,14 +7,13 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "DAILY",
-    "timeOfDay": "06:00",
+    "timeOfDay": "07:00",
     "daysOfWeek": [],
     "scheduledTimestamp": null,
     "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-18",
+    "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509,
-    "postedAt": 1794973056158
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_daily_2",
@@ -24,60 +23,23 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "DAILY",
-    "timeOfDay": "06:01",
+    "timeOfDay": "20:30",
     "daysOfWeek": [],
     "scheduledTimestamp": null,
     "status": "ACTIVE",
-    "lastTriggeredDate": "2026-11-18",
+    "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509,
-    "postedAt": 1794973056158
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_3",
-    "type": "TEXT",
-    "text": "ChatGPT\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#10A37F",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
-    "daysOfWeek": [
-      1
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_4",
-    "type": "TEXT",
-    "text": "Gemini AI\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#4285F4",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
-    "daysOfWeek": [
-      1
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_5",
     "type": "TEXT",
     "text": "Jasa Cek Tag Getcontact (Rp5.000)\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#075E54",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       1
     ],
@@ -85,7 +47,43 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_4",
+    "type": "TEXT",
+    "text": "ChatGPT\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#10A37F",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "12:30",
+    "daysOfWeek": [
+      1
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_5",
+    "type": "TEXT",
+    "text": "Gemini AI\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#4285F4",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "16:00",
+    "daysOfWeek": [
+      1
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_6",
@@ -95,7 +93,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       1
     ],
@@ -103,7 +101,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_7",
@@ -113,7 +111,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       1
     ],
@@ -121,7 +119,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_8",
@@ -131,7 +129,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       2
     ],
@@ -139,7 +137,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_9",
@@ -149,7 +147,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
+    "timeOfDay": "12:30",
     "daysOfWeek": [
       2
     ],
@@ -157,7 +155,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_10",
@@ -167,7 +165,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "16:00",
     "daysOfWeek": [
       2
     ],
@@ -175,7 +173,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_11",
@@ -185,7 +183,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       2
     ],
@@ -193,7 +191,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_12",
@@ -203,7 +201,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       2
     ],
@@ -211,35 +209,17 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_13",
-    "type": "TEXT",
-    "text": "Vidio Platinum & EPL 🔥\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#ED1C24",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
-    "daysOfWeek": [
-      3
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_14",
     "type": "TEXT",
     "text": "Viu Premium Resmi 🔥\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#FFB800",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       3
     ],
@@ -247,7 +227,25 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_14",
+    "type": "TEXT",
+    "text": "Vidio Platinum & EPL 🔥\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#ED1C24",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "12:30",
+    "daysOfWeek": [
+      3
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_15",
@@ -257,7 +255,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "16:00",
     "daysOfWeek": [
       3
     ],
@@ -265,35 +263,17 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_16",
-    "type": "TEXT",
-    "text": "Amazon Prime Video\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#00A8E1",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
-    "daysOfWeek": [
-      3
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_17",
     "type": "TEXT",
     "text": "HBO GO Premium\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#2E1A47",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       3
     ],
@@ -301,7 +281,25 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_17",
+    "type": "TEXT",
+    "text": "Amazon Prime Video\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#00A8E1",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "22:00",
+    "daysOfWeek": [
+      3
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_18",
@@ -311,7 +309,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       4
     ],
@@ -319,7 +317,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_19",
@@ -329,7 +327,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
+    "timeOfDay": "12:30",
     "daysOfWeek": [
       4
     ],
@@ -337,7 +335,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_20",
@@ -347,7 +345,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "16:00",
     "daysOfWeek": [
       4
     ],
@@ -355,7 +353,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_21",
@@ -365,7 +363,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       4
     ],
@@ -373,7 +371,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_22",
@@ -383,7 +381,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       4
     ],
@@ -391,53 +389,17 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_23",
-    "type": "TEXT",
-    "text": "Spotify Premium Resmi\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#1DB954",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
-    "daysOfWeek": [
-      5
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_24",
-    "type": "TEXT",
-    "text": "Apple Music Individual\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#FC3C44",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
-    "daysOfWeek": [
-      5
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_25",
     "type": "TEXT",
     "text": "Duolingo Super\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#58CC02",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       5
     ],
@@ -445,7 +407,43 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_24",
+    "type": "TEXT",
+    "text": "Spotify Premium Resmi\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#1DB954",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "12:30",
+    "daysOfWeek": [
+      5
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_25",
+    "type": "TEXT",
+    "text": "Apple Music Individual\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#FC3C44",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "16:00",
+    "daysOfWeek": [
+      5
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_26",
@@ -455,7 +453,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       5
     ],
@@ -463,7 +461,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_27",
@@ -473,7 +471,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       5
     ],
@@ -481,53 +479,17 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_28",
-    "type": "TEXT",
-    "text": "Dazz Cam Pro (Analog iOS)\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#4E342E",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
-    "daysOfWeek": [
-      6
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_29",
-    "type": "TEXT",
-    "text": "Wink Video Retouch 4K\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#7B1FA2",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
-    "daysOfWeek": [
-      6
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_30",
     "type": "TEXT",
     "text": "Adobe Lightroom Pro (Tanya Stok)\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#31A8FF",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       6
     ],
@@ -535,7 +497,43 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_29",
+    "type": "TEXT",
+    "text": "Dazz Cam Pro (Analog iOS)\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#4E342E",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "12:30",
+    "daysOfWeek": [
+      6
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_30",
+    "type": "TEXT",
+    "text": "Wink Video Retouch 4K\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#7B1FA2",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "16:00",
+    "daysOfWeek": [
+      6
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_31",
@@ -545,7 +543,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       6
     ],
@@ -553,7 +551,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_32",
@@ -563,7 +561,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       6
     ],
@@ -571,35 +569,17 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_33",
-    "type": "TEXT",
-    "text": "Zoom Pro Resmi\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
-    "backgroundColor": "#2D8CFF",
-    "imagePath": null,
-    "imageUrl": null,
-    "repeatType": "WEEKLY",
-    "timeOfDay": "06:02",
-    "daysOfWeek": [
-      0
-    ],
-    "scheduledTimestamp": null,
-    "status": "ACTIVE",
-    "lastTriggeredDate": null,
-    "errorMessage": null,
-    "createdAt": 1794973046509
-  },
-  {
-    "id": "sched_weekly_34",
     "type": "TEXT",
     "text": "CamScanner Pro Resmi\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
     "backgroundColor": "#009688",
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:03",
+    "timeOfDay": "10:00",
     "daysOfWeek": [
       0
     ],
@@ -607,7 +587,25 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
+  },
+  {
+    "id": "sched_weekly_34",
+    "type": "TEXT",
+    "text": "Zoom Pro Resmi\n\nInfo Lebih Lanjut balas pesan ini dengan mengetik : LIST",
+    "backgroundColor": "#2D8CFF",
+    "imagePath": null,
+    "imageUrl": null,
+    "repeatType": "WEEKLY",
+    "timeOfDay": "12:30",
+    "daysOfWeek": [
+      0
+    ],
+    "scheduledTimestamp": null,
+    "status": "ACTIVE",
+    "lastTriggeredDate": null,
+    "errorMessage": null,
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_35",
@@ -617,7 +615,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:04",
+    "timeOfDay": "16:00",
     "daysOfWeek": [
       0
     ],
@@ -625,7 +623,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_36",
@@ -635,7 +633,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:05",
+    "timeOfDay": "18:30",
     "daysOfWeek": [
       0
     ],
@@ -643,7 +641,7 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   },
   {
     "id": "sched_weekly_37",
@@ -653,7 +651,7 @@
     "imagePath": null,
     "imageUrl": null,
     "repeatType": "WEEKLY",
-    "timeOfDay": "06:06",
+    "timeOfDay": "22:00",
     "daysOfWeek": [
       0
     ],
@@ -661,6 +659,6 @@
     "status": "ACTIVE",
     "lastTriggeredDate": null,
     "errorMessage": null,
-    "createdAt": 1794973046509
+    "createdAt": 1794979474909
   }
 ]
