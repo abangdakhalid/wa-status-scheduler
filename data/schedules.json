@@ -38,7 +38,7 @@
     "backgroundColor": "#075E54",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       1
@@ -56,7 +56,7 @@
     "backgroundColor": "#10A37F",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       1
@@ -74,7 +74,7 @@
     "backgroundColor": "#4285F4",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       1
@@ -92,7 +92,7 @@
     "backgroundColor": "#5C6BC0",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       1
@@ -110,7 +110,7 @@
     "backgroundColor": "#FF8800",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       1
@@ -128,7 +128,7 @@
     "backgroundColor": "#00C4CC",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       2
@@ -146,7 +146,7 @@
     "backgroundColor": "#111111",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       2
@@ -164,7 +164,7 @@
     "backgroundColor": "#6200EE",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       2
@@ -182,7 +182,7 @@
     "backgroundColor": "#C2185B",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       2
@@ -200,7 +200,7 @@
     "backgroundColor": "#212121",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       2
@@ -218,7 +218,7 @@
     "backgroundColor": "#FFB800",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       3
@@ -236,7 +236,7 @@
     "backgroundColor": "#ED1C24",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       3
@@ -254,7 +254,7 @@
     "backgroundColor": "#113CCF",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       3
@@ -272,7 +272,7 @@
     "backgroundColor": "#2E1A47",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       3
@@ -290,7 +290,7 @@
     "backgroundColor": "#00A8E1",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       3
@@ -308,7 +308,7 @@
     "backgroundColor": "#FF5722",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       4
@@ -326,7 +326,7 @@
     "backgroundColor": "#00C853",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       4
@@ -344,7 +344,7 @@
     "backgroundColor": "#00AEEC",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       4
@@ -362,7 +362,7 @@
     "backgroundColor": "#E91E63",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       4
@@ -380,7 +380,7 @@
     "backgroundColor": "#3F51B5",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       4
@@ -398,7 +398,7 @@
     "backgroundColor": "#58CC02",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       5
@@ -416,7 +416,7 @@
     "backgroundColor": "#1DB954",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       5
@@ -434,7 +434,7 @@
     "backgroundColor": "#FC3C44",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       5
@@ -452,7 +452,7 @@
     "backgroundColor": "#FF6122",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       5
@@ -470,7 +470,7 @@
     "backgroundColor": "#E64A19",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       5
@@ -488,7 +488,7 @@
     "backgroundColor": "#31A8FF",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       6
@@ -506,7 +506,7 @@
     "backgroundColor": "#4E342E",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       6
@@ -524,7 +524,7 @@
     "backgroundColor": "#7B1FA2",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       6
@@ -542,7 +542,7 @@
     "backgroundColor": "#F50057",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       6
@@ -560,7 +560,7 @@
     "backgroundColor": "#00897B",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       6
@@ -578,7 +578,7 @@
     "backgroundColor": "#009688",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "10:00",
     "daysOfWeek": [
       0
@@ -596,7 +596,7 @@
     "backgroundColor": "#2D8CFF",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "12:30",
     "daysOfWeek": [
       0
@@ -614,7 +614,7 @@
     "backgroundColor": "#546E7A",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "16:00",
     "daysOfWeek": [
       0
@@ -632,7 +632,7 @@
     "backgroundColor": "#673AB7",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "18:30",
     "daysOfWeek": [
       0
@@ -650,7 +650,7 @@
     "backgroundColor": "#2E7D32",
     "imagePath": null,
     "imageUrl": null,
-    "repeatType": "WEEKLY",
+    "repeatType": "CUSTOM_DAYS",
     "timeOfDay": "22:00",
     "daysOfWeek": [
       0

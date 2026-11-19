@@ -767,7 +767,7 @@ setInterval(async () => {
                     isDue = true;
                 }
             }
-        } else if (schedule.repeatType === 'CUSTOM_DAYS') {
+        } else if (schedule.repeatType === 'CUSTOM_DAYS' || schedule.repeatType === 'WEEKLY') {
             if (schedule.status === 'ACTIVE' && schedule.timeOfDay && Array.isArray(schedule.daysOfWeek)) {
                 const days = schedule.daysOfWeek.map(d => parseInt(d, 10));
                 if (days.includes(currentDayOfWeek)) {
